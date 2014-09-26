@@ -5,15 +5,18 @@ import java.util.Collection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class User {
 	
 	private int id;	
 	private String name;
-	private Collection<Car> car;
+	private Car driver;
+	private Car passenger;
+	private Collection<Event> events;
 
 	@GeneratedValue
 	@Id
@@ -32,14 +35,32 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	@OneToMany(mappedBy="owner")
-	public Collection<Car> getCar() {
-		return car;
+	
+	@OneToOne
+	public Car getDriver() {
+		return driver;
 	}
 
-	public void setCar(Collection<Car> car) {
-		this.car = car;
+	public void setDriver(Car driver) {
+		this.driver = driver;
+	}
+
+	@ManyToOne
+	public Car getPassenger() {
+		return passenger;
+	}
+
+	public void setPassenger(Car passenger) {
+		this.passenger = passenger;
+	}
+
+	@ManyToMany
+	public Collection<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(Collection<Event> events) {
+		this.events = events;
 	}
 
 }

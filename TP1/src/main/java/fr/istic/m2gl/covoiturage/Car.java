@@ -1,10 +1,12 @@
 package fr.istic.m2gl.covoiturage;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Car {
@@ -12,7 +14,8 @@ public class Car {
 	private int id;	
 	private String model;	
 	private int nbSeat;
-	private User owner;
+	private User driver;
+	private Collection<User> passenger;
 
 	@GeneratedValue
 	@Id
@@ -40,12 +43,21 @@ public class Car {
 		this.nbSeat = nbSeat;
 	}
 
-	@ManyToOne
-	public User getOwner() {
-		return owner;
+	@OneToOne(mappedBy="driver")
+	public User getDriver() {
+		return driver;
 	}
-	
-	public void setOwner(User owner) {
-		this.owner = owner;
+
+	public void setDriver(User driver) {
+		this.driver = driver;
+	}
+
+	@OneToMany(mappedBy="passenger")
+	public Collection<User> getPassenger() {
+		return passenger;
+	}
+
+	public void setPassenger(Collection<User> passenger) {
+		this.passenger = passenger;
 	}
 }

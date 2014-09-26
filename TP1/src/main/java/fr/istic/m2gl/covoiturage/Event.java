@@ -1,10 +1,12 @@
 package fr.istic.m2gl.covoiturage;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -14,7 +16,8 @@ public class Event {
 	private int id;
 	private Date date;
 	private String lieu; // add coords gps ?
-	
+	private Collection<User> participant;
+
 	@GeneratedValue
 	@Id
 	public int getId() {
@@ -40,6 +43,15 @@ public class Event {
 	
 	public void setLieu(String lieu) {
 		this.lieu = lieu;
+	}
+
+	@ManyToMany(mappedBy="events")
+	public Collection<User> getParticipant() {
+		return participant;
+	}
+
+	public void setParticipant(Collection<User> participant) {
+		this.participant = participant;
 	}
  
 }
