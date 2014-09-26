@@ -1,12 +1,9 @@
 package fr.istic.m2gl.covoiturage;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 
 @Entity
@@ -14,9 +11,8 @@ public class Car {
 	
 	private int id;	
 	private String model;	
-	private int nbPlaces;	
-	private User conducteur;
-	private List<User> passagers;
+	private int nbSeat;
+	private User owner;
 
 	@GeneratedValue
 	@Id
@@ -36,42 +32,20 @@ public class Car {
 		this.model = model;
 	}
 
-	public int getNbPlaces() {
-		return nbPlaces;
+	public int getNbSeat() {
+		return nbSeat;
 	}
 
-	public void setNbPlaces(int nbPlaces) {
-		this.nbPlaces = nbPlaces;
+	public void setNbSeat(int nbSeat) {
+		this.nbSeat = nbSeat;
 	}
 
-	@OneToOne /* Relation 1 --> 1 */
-	public User getConducteur() {
-		return conducteur;
-	}
-
-	/**
-	 * @param conducteur
-	 */
-	public void setConducteur(User conducteur) {
-		this.conducteur = conducteur;
+	@ManyToOne
+	public User getOwner() {
+		return owner;
 	}
 	
-	/**
-	 * @return Liste des passagers
-	 */
-	@OneToMany /* Relation 0..1 --> 0..* */
-	public List<User> getPassagers() {
-		return passagers;
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
-
-	/**
-	 * Set la liste des passagers
-	 * @param passagers : Nouvelle liste de passagers
-	 */
-	public void setPassagers(List<User> passagers) {
-		this.passagers = passagers;
-	}
-	
-	// + : addPassager, removePassager ...
-
 }
