@@ -6,16 +6,27 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * The class Event save in database.
+ * @author Anthony LHOMME & Robin HACAULT
+ *
+ */
 @Entity
 public class Event {
 	
 	private int id;
+	
+	/* The date on which the event takes place */
 	private Date date;
-	private String lieu; // add coords gps ?
+	
+	/* The place of event */
+	private String place; // add coords gps ?
+	
+	/* The list of participant of event */
 	private Collection<User> participant;
 
 	@GeneratedValue
@@ -37,15 +48,15 @@ public class Event {
 		this.date = date;
 	}
 	
-	public String getLieu() {
-		return lieu;
+	public String getPLace() {
+		return place;
 	}
 	
-	public void setLieu(String lieu) {
-		this.lieu = lieu;
+	public void setPlace(String place) {
+		this.place = place;
 	}
 
-	@ManyToMany(mappedBy="events")
+	@OneToMany(mappedBy="events")
 	public Collection<User> getParticipant() {
 		return participant;
 	}

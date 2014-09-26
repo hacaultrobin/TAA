@@ -1,22 +1,33 @@
 package fr.istic.m2gl.covoiturage.domain;
 
-import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+/**
+ * The class User save in database.
+ * @author Anthony LHOMME & Robin HACAULT
+ *
+ */
 @Entity
 public class User {
 	
-	private int id;	
+	private int id;
+	
+	/* Surname and first name of the user */
 	private String name;
+	
+	/* The user is the driver of the car */
 	private Car driver;
+
+	/* The user is passenger of a car */
 	private Car passenger;
-	private Collection<Event> events;
+	
+	/* The event whose user is involved */
+	private Event event;
 
 	@GeneratedValue
 	@Id
@@ -54,13 +65,13 @@ public class User {
 		this.passenger = passenger;
 	}
 
-	@ManyToMany
-	public Collection<Event> getEvents() {
-		return events;
+	@ManyToOne
+	public Event getEvent() {
+		return event;
 	}
 
-	public void setEvents(Collection<Event> events) {
-		this.events = events;
+	public void setEvent(Event event) {
+		this.event = event;
 	}
 
 }

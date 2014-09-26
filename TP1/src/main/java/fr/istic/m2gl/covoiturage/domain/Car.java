@@ -8,13 +8,26 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+/**
+ * The class Car save in database.
+ * @author Anthony LHOMME & Robin HACAULT
+ *
+ */
 @Entity
 public class Car {
 	
-	private int id;	
-	private String model;	
+	private int id;
+	
+	/* The model of car */
+	private String model;
+	
+	/* The number of seat in the car (include seat of driver) */
 	private int nbSeat;
+	
+	/* The driver */
 	private User driver;
+	
+	/* The list of passenger in the car */
 	private Collection<User> passenger;
 
 	@GeneratedValue
