@@ -1,4 +1,4 @@
-package fr.istic.m2gl.covoiturage;
+package fr.istic.m2gl.covoiturage.domain;
 
 import java.util.Collection;
 
