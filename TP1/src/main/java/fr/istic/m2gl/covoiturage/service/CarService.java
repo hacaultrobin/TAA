@@ -5,10 +5,10 @@ import fr.istic.m2gl.covoiturage.domain.User;
 public interface CarService {
 
 	public void addCar(int id, String model, int nbSeat);
-	public void removeCar();
+	public void removeCar(int id);
 	
-	public void addUserAsDriver(User driver);
-	public void removeUserAsDriver(User driver);
+	public void setDriver(User driver);
+	public void removeDriver();
 	
 	public void addUserAsPassenger(User passenger);
 	public void removeUserAsPassenger(User passenger);

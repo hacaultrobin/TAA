@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
- * The class User save in database.
- * @author Anthony LHOMME & Robin HACAULT
+ * The class User - Mapped with the database.
+ * @authors Anthony LHOMME & Robin HACAULT
  *
  */
 @Entity
@@ -20,14 +20,17 @@ public class User {
 	/* Surname and first name of the user */
 	private String name;
 	
-	/* The user is the driver of the car */
-	private Car driver;
-
-	/* The user is passenger of a car */
-	private Car passenger;
+	/* The car mapped to the user */
+	private Car car;
 	
-	/* The event whose user is involved */
+	/* The event for which the user is involved */
 	private Event event;
+	
+	public User () {}
+	
+	public User (String name) {
+		this.name = name;
+	}
 
 	@GeneratedValue
 	@Id
@@ -47,22 +50,13 @@ public class User {
 		this.name = name;
 	}
 	
-	@OneToOne
-	public Car getDriver() {
-		return driver;
-	}
-
-	public void setDriver(Car driver) {
-		this.driver = driver;
-	}
-
 	@ManyToOne
-	public Car getPassenger() {
-		return passenger;
+	public Car getCar() {
+		return car;
 	}
 
-	public void setPassenger(Car passenger) {
-		this.passenger = passenger;
+	public void setCar(Car c) {
+		this.car = c;
 	}
 
 	@ManyToOne
@@ -72,6 +66,18 @@ public class User {
 
 	public void setEvent(Event event) {
 		this.event = event;
+	}
+
+	/**
+	 * @return Tell if the user is a driver
+	 */
+	@Transient /* --> No effect on the mapping */
+	public boolean isDriver() {
+		if (car != null) {
+			User carDriver = car.getDriver();
+			return carDriver != null && carDriver.getId() == this.id;
+		}
+		return false;
 	}
 
 }

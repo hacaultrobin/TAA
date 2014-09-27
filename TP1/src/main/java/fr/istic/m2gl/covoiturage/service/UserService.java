@@ -8,13 +8,10 @@ public interface UserService {
 	public void addUser(int id, String name);
 	public void removeUser();
 	
-	public void addCarAsDriver(Car c);
-	public void removeCarAsDriver(Car c);
-	
-	public void addCarAsPassenger(Car c);
-	public void removeCarAsPassenge(Car c);
-	
-	public void addEventAsParticipant(Event e);
-	public void removeEventAsParticipant(Event e);
+	public void setCar(Car c);
+	public void removeCar();
+		
+	public void setEventAsParticipant(Event e);
+	public void removeEventAsParticipant();
 	
 }

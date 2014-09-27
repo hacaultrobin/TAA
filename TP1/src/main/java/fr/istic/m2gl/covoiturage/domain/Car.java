@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
- * The class Car save in database.
+ * The class Car - Mapped with the database
  * @author Anthony LHOMME & Robin HACAULT
  *
  */
@@ -27,8 +27,15 @@ public class Car {
 	/* The driver */
 	private User driver;
 	
-	/* The list of passenger in the car */
-	private Collection<User> passenger;
+	/* The list of all users in the car, including thr driver */
+	private Collection<User> usersInCar;
+	
+	public Car () {}
+	
+	public Car (String model, int nbSeat) {
+		this.model = model;
+		this.nbSeat = nbSeat;
+	}
 
 	@GeneratedValue
 	@Id
@@ -56,7 +63,7 @@ public class Car {
 		this.nbSeat = nbSeat;
 	}
 
-	@OneToOne(mappedBy="driver")
+	@OneToOne
 	public User getDriver() {
 		return driver;
 	}
@@ -65,12 +72,15 @@ public class Car {
 		this.driver = driver;
 	}
 
-	@OneToMany(mappedBy="passenger")
-	public Collection<User> getPassenger() {
-		return passenger;
+	/**
+	 * @return Collection of all the users in the car, including the driver
+	 */
+	@OneToMany(mappedBy="car") /* Relation bidirect */
+	public Collection<User> getUsersInCar() {
+		return usersInCar;
 	}
 
-	public void setPassenger(Collection<User> passenger) {
-		this.passenger = passenger;
+	public void setUsersInCar(Collection<User> usersInCar) {
+		this.usersInCar = usersInCar;
 	}
 }

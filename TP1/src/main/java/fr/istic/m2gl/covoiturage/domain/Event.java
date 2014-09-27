@@ -11,8 +11,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * The class Event save in database.
- * @author Anthony LHOMME & Robin HACAULT
+ * The class Event - Mapped with the database.
+ * @authors Anthony LHOMME & Robin HACAULT
  *
  */
 @Entity
@@ -23,11 +23,11 @@ public class Event {
 	/* The date on which the event takes place */
 	private Date date;
 	
-	/* The place of event */
+	/* The place of the event */
 	private String place; // add coords gps ?
 	
-	/* The list of participant of event */
-	private Collection<User> participant;
+	/* The list of participants of the event */
+	private Collection<User> participants;
 
 	@GeneratedValue
 	@Id
@@ -48,21 +48,21 @@ public class Event {
 		this.date = date;
 	}
 	
-	public String getPLace() {
+	public String getPlace() {
 		return place;
 	}
-	
+
 	public void setPlace(String place) {
 		this.place = place;
 	}
 
-	@OneToMany(mappedBy="events")
-	public Collection<User> getParticipant() {
-		return participant;
+	@OneToMany(mappedBy="event") /* Relation bidirect */
+	public Collection<User> getParticipants() {
+		return participants;
 	}
 
-	public void setParticipant(Collection<User> participant) {
-		this.participant = participant;
+	public void setParticipants(Collection<User> participants) {
+		this.participants = participants;
 	}
  
 }
