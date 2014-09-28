@@ -1,9 +1,15 @@
 package jpa;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+
+import fr.istic.m2gl.covoiturage.domain.Car;
+import fr.istic.m2gl.covoiturage.domain.User;
 
 public class JpaTest {
 
@@ -27,20 +33,44 @@ public class JpaTest {
 
 		try {
 
+			// Test : Creation de 5 utilisateurs
+			List<User> users = new ArrayList<User>();
+			for (int i = 1; i <= 5; i++) {
+				User user = new User("user_" + i);
+				manager.persist(user);
+				users.add(user);
+			}
+			
+			// Test : Creation d'1 voiture de 5 places
+			Car car = new Car("Supercar", 5);
+			manager.persist(car);
+			car.setDriver(users.get(0));
+			users.get(0).setCar(car);
+			
+			users.get(1).setCar(car); // 2 users dans la voiture
+									
+			System.err.println("Voiture " + car.getId() + " : Modèle " + car.getModel() + ", " + car.getNbSeat() + " places, " +
+							   "conduite par " + car.getDriver().getName());
+			
+			System.err.println(users.get(0).getName() + " est conducteur : " + users.get(0).isDriver());
+						
+			tx.commit(); // Sauvegarde
+			manager.close();
+			
+			/* Recuperation d'objets depuis la base */
+			EntityManager em = factory.createEntityManager();
+			Car car1 = em.find(Car.class, 1);
+			System.err.println(car1.getUsersInCar().size() + " utilisateurs dans la voiture");
+			em.close();
 			
 			
-			//manager.persist(et);
 			
-
 					
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		tx.commit();
-		/*
-		Enseignant es = (Enseignant) manager.createQuery(
-				"select e1 from Enseignant as e1 where e1.nom='barais'")
-				.getSingleResult();*/
+		
+		factory.close();
 		
 	}
 
