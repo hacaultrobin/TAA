@@ -26,8 +26,19 @@ public class Event {
 	/* The place of the event */
 	private String place; // add coords gps ?
 	
+	/* The description of the event */
+	private String description;
+	
 	/* The list of participants of the event */
 	private Collection<User> participants;
+	
+	public Event () {}
+	
+	public Event (Date date, String place, String description) {
+		this.place = place;
+		this.description = description;
+		this.date = date;
+	}
 
 	@GeneratedValue
 	@Id
@@ -54,6 +65,14 @@ public class Event {
 
 	public void setPlace(String place) {
 		this.place = place;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@OneToMany(mappedBy="event") /* Relation bidirect */

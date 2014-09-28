@@ -1,6 +1,7 @@
 package jpa;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,6 +10,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import fr.istic.m2gl.covoiturage.domain.Car;
+import fr.istic.m2gl.covoiturage.domain.Event;
 import fr.istic.m2gl.covoiturage.domain.User;
 
 public class JpaTest {
@@ -53,6 +55,17 @@ public class JpaTest {
 							   "conduite par " + car.getDriver().getName());
 			
 			System.err.println(users.get(0).getName() + " est conducteur : " + users.get(0).isDriver());
+			
+			/* Création d'un event avec 3 membres dans la même voiture */
+			Event e1 = new Event(new Date(), "Rennes", "Super event !!");
+			manager.persist(e1);
+			users.get(0).setEvent(e1);
+			users.get(1).setEvent(e1);
+			users.get(2).setEvent(e1);
+			users.get(0).setCar(car);
+			users.get(1).setCar(car);
+			users.get(2).setCar(car);
+			car.setDriver(users.get(0));
 						
 			tx.commit(); // Sauvegarde
 			manager.close();
@@ -60,7 +73,9 @@ public class JpaTest {
 			/* Recuperation d'objets depuis la base */
 			EntityManager em = factory.createEntityManager();
 			Car car1 = em.find(Car.class, 1);
-			System.err.println(car1.getUsersInCar().size() + " utilisateurs dans la voiture");
+			System.err.println(car1.getUsersInCar().size() + " utilisateurs dans la voiture " + car1.getModel());
+			Event ev1 = em.find(Event.class, 1);
+			System.err.println("Event " + ev1.getPlace() + " - " + ev1.getParticipants().size() + " participants");
 			em.close();
 			
 			
