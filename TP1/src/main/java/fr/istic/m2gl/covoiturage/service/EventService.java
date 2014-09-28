@@ -43,10 +43,10 @@ public interface EventService {
 	public void joinEvent (Event e, User passenger);
 	
 	/**
-	 * Add driver to the event e, who is the driver of the new car c
+	 * Add driver to the event e, who is the driver of the car c
 	 * @param e is the event to join
-	 * @param driver is the user to add to the event and who will drive the new car c
-	 * @param c is the new car added to the event
+	 * @param driver is the user to add to the event and who will drive the car c
+	 * @param c is the car added to the event
 	 */
 	public void joinEventWithCar (Event e, User driver, Car c);
 	

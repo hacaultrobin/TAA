@@ -10,7 +10,4 @@ public interface CarService {
 	public void setDriver(User driver);
 	public void removeDriver();
 	
-	public void addUserAsPassenger(User passenger);
-	public void removeUserAsPassenger(User passenger);
-	
 }
