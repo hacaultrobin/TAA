@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The class User - Mapped with the database.
@@ -13,6 +14,7 @@ import javax.persistence.Transient;
  *
  */
 @Entity
+@XmlRootElement
 public class User {
 	
 	private int id;

@@ -9,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  * The class Event - Mapped with the database.
@@ -16,6 +20,7 @@ import javax.persistence.TemporalType;
  *
  */
 @Entity
+@XmlRootElement
 public class Event {
 	
 	private int id;

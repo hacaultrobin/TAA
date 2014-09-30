@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The class Car - Mapped with the database
@@ -14,6 +15,7 @@ import javax.persistence.OneToOne;
  *
  */
 @Entity
+@XmlRootElement
 public class Car {
 	
 	private int id;
