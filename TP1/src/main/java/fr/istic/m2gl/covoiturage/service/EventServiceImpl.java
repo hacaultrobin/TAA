@@ -14,11 +14,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import fr.istic.m2gl.covoiturage.domain.Car;
 import fr.istic.m2gl.covoiturage.domain.Event;
-import fr.istic.m2gl.covoiturage.domain.User;
 
 @Path("/events")
 public class EventServiceImpl implements EventService {
@@ -36,8 +35,11 @@ public class EventServiceImpl implements EventService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Collection<Event> getEvents() {
 		EntityManager manager = getEntityManager();
+		@SuppressWarnings("unchecked")
 		List<Event> events = manager.createQuery("SELECT e FROM Event e").getResultList();
-		events.get(0).setParticipants(null); // TODO : Problème de cycle (relation bidirect)
+		for (Event event : events) {
+			event.setParticipants(null); // TODO : Problème de cycle (relation bidirect)
+		}
 		return events;
 	}
 
@@ -47,43 +49,43 @@ public class EventServiceImpl implements EventService {
 	public Event getEvent(@PathParam("id") int id) {
 		EntityManager manager = getEntityManager();
 		Event event = manager.find(Event.class, id);
-		event.setParticipants(null); // TODO : Problème de cycle (relation bidirect)
+		if (event != null) event.setParticipants(null); // TODO : Problème de cycle (relation bidirect)		
 		return event;
 	}
 
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void addEvent(Date d, String lieu, String desc) {
+	public void addEvent(@QueryParam("date") Date d, @QueryParam("lieu") String lieu, @QueryParam("desc") String desc) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@DELETE
 	@Path("/{id}")
-	public void removeEvent(Event e) {
+	public void removeEvent(@PathParam("id") int idEvent) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@POST
-	@Path("/join")
+	@Path("/{id}/join")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void joinEvent(Event e, User passenger) {
+	public void joinEvent(@PathParam("id") int idEvent, @QueryParam("userid") int idPassenger) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@POST
-	@Path("/joindriver")
+	@Path("/{id}/joindriver")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void joinEventWithCar(Event e, User driver, Car c) {
+	public void joinEventWithCar(@PathParam("id") int idEvent, @QueryParam("userid") int idDriver, @QueryParam("carid") int idCar) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@DELETE
-	@Path("/leave/{id}")
-	public void leaveEvent(Event e, User user) {
+	@Path("/{id}/removeuser/{userid}")
+	public void leaveEvent(@PathParam("id") int idEvent, @PathParam("userid") int idUser) {
 		// TODO Auto-generated method stub
 
 	}

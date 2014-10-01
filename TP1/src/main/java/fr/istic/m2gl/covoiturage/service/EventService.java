@@ -3,9 +3,7 @@ package fr.istic.m2gl.covoiturage.service;
 import java.util.Collection;
 import java.util.Date;
 
-import fr.istic.m2gl.covoiturage.domain.Car;
 import fr.istic.m2gl.covoiturage.domain.Event;
-import fr.istic.m2gl.covoiturage.domain.User;
 
 public interface EventService {
 	
@@ -32,15 +30,14 @@ public interface EventService {
 	 * Remove an event, all users leaves it
 	 * @param e is the event to remove
 	 */
-	public void removeEvent(Event e);	
-
+	public void removeEvent(int idEvent);	
 	
 	/**
 	 * Add passenger to the event e if cars are available
 	 * @param e is the event to join
 	 * @param passenger is the user to add to the event
 	 */
-	public void joinEvent (Event e, User passenger);
+	public void joinEvent (int idEvent, int idDriver);
 	
 	/**
 	 * Add driver to the event e, who is the driver of the car c
@@ -48,13 +45,13 @@ public interface EventService {
 	 * @param driver is the user to add to the event and who will drive the car c
 	 * @param c is the car added to the event
 	 */
-	public void joinEventWithCar (Event e, User driver, Car c);
+	public void joinEventWithCar (int idEvent, int idDriver, int idCar);
 	
 	/**
 	 * Delete user from e, and user's car if he's the driver 
 	 * @param e The event to leave
 	 * @param user is the participant (driver or passenger) who leave the event
 	 */
-	public void leaveEvent (Event e, User user);
+	public void leaveEvent (int idEvent, int idUser);
 	
 }
