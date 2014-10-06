@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,44 +18,60 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import fr.istic.m2gl.covoiturage.domain.Car;
 import fr.istic.m2gl.covoiturage.domain.Event;
+import fr.istic.m2gl.covoiturage.domain.User;
 
 @Path("/events")
 public class EventServiceImpl implements EventService {
 	
-	/**
-	 * @return An Entity manager used to map objets from the database
-	 */
-	private EntityManager getEntityManager () {
+	EntityManager manager;
+	
+	public EventServiceImpl () {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("dev");
-		EntityManager manager = factory.createEntityManager();
-		return manager;
+		manager = factory.createEntityManager();
+	}
+	
+	/**
+	 * Break relation cycles to show an event
+	 * @param event
+	 */
+	private void breakEventCycles (Event event) {
+		Collection<User> participants = event.getParticipants();
+		for (User user : participants) {
+			user.setEvent(null);
+			Car c = user.getCar();
+			if (c != null) {
+				c.setDriver(null);
+				c.setUsersInCar(null);
+			}
+		}
 	}
 	
 	@GET
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<Event> getEvents() {
-		EntityManager manager = getEntityManager();
 		@SuppressWarnings("unchecked")
 		List<Event> events = manager.createQuery("SELECT e FROM Event e").getResultList();
 		for (Event event : events) {
-			event.setParticipants(null); // TODO : Problème de cycle (relation bidirect)
-		}
+			breakEventCycles(event);
+		}		
 		return events;
 	}
 
 	@GET
 	@Path("/{id}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
 	public Event getEvent(@PathParam("id") int id) {
-		EntityManager manager = getEntityManager();
 		Event event = manager.find(Event.class, id);
-		if (event != null) event.setParticipants(null); // TODO : Problème de cycle (relation bidirect)		
+		if (event != null) {
+			breakEventCycles(event);
+		}
 		return event;
 	}
 
 	@POST
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_JSON})
 	public void addEvent(@QueryParam("date") Date d, @QueryParam("lieu") String lieu, @QueryParam("desc") String desc) {
 		// TODO Auto-generated method stub
 
@@ -63,13 +80,20 @@ public class EventServiceImpl implements EventService {
 	@DELETE
 	@Path("/{id}")
 	public void removeEvent(@PathParam("id") int idEvent) {
-		// TODO Auto-generated method stub
-
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		Event event = manager.find(Event.class, idEvent);
+		Collection<User> participants = event.getParticipants();
+		for (User user : participants) {
+			user.setEvent(null);
+		}
+		manager.remove(event);
+		tx.commit();
 	}
 
 	@POST
 	@Path("/{id}/join")
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_JSON})
 	public void joinEvent(@PathParam("id") int idEvent, @QueryParam("userid") int idPassenger) {
 		// TODO Auto-generated method stub
 
@@ -86,8 +110,16 @@ public class EventServiceImpl implements EventService {
 	@DELETE
 	@Path("/{id}/removeuser/{userid}")
 	public void leaveEvent(@PathParam("id") int idEvent, @PathParam("userid") int idUser) {
-		// TODO Auto-generated method stub
-
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		Event event = manager.find(Event.class, idEvent);
+		User user = manager.find(User.class, idUser);
+		if (event != null && user != null && user.getEvent().getId() == idEvent) {
+			Collection<User> event_users = event.getParticipants();
+			event_users.remove(user);
+			user.setEvent(null);
+		}
+		tx.commit();
 	}
 
 }
