@@ -1,5 +1,6 @@
 package fr.istic.m2gl.covoiturage.domain;
 
+import java.beans.Transient;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The class Car - Mapped with the database
@@ -14,6 +16,7 @@ import javax.persistence.OneToOne;
  *
  */
 @Entity
+@XmlRootElement
 public class Car {
 	
 	private int id;
@@ -82,5 +85,15 @@ public class Car {
 
 	public void setUsersInCar(Collection<User> usersInCar) {
 		this.usersInCar = usersInCar;
+	}
+	
+	@Transient
+	public void addPassenger(User passenger) {
+		usersInCar.add(passenger);
+	}
+	
+	@Transient
+	public void removePassenger(User passenger) {
+		usersInCar.remove(passenger);
 	}
 }

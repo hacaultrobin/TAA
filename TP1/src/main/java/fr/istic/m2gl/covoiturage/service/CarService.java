@@ -3,6 +3,7 @@ package fr.istic.m2gl.covoiturage.service;
 import java.util.Collection;
 
 import fr.istic.m2gl.covoiturage.domain.Car;
+import fr.istic.m2gl.covoiturage.domain.User;
 
 /**
  * The interface CarService
@@ -36,6 +37,13 @@ public interface CarService {
 	public void removeCar(int id);
 	
 	/**
+	 * Get the driver of car
+	 * @param id is the car to get the driver
+	 * @return the driver of car designed by id
+	 */
+	public User getDriver(int id);
+	
+	/**
 	 * Add a user as driver of the car
 	 * @param idCar is the car to add driver
 	 * @param idDriver is the user who drives the car
@@ -47,6 +55,13 @@ public interface CarService {
 	 * @param idCar is the car to remove driver
 	 */
 	public void removeDriver(int idCar);
+	
+	/**
+	 * Get the list of passenger, of the car
+	 * @param id is the car to get the list of passenger
+	 * @return the list of passenger,of the car designed by id
+	 */
+	public Collection<User> getPassengers(int id);
 	
 	/**
 	 * Add a passenger to the car
