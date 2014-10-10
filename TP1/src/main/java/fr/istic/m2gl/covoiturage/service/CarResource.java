@@ -72,7 +72,6 @@ public class CarResource implements CarService {
 				ep.setParticipants(null);
 			}
 		}
-		
 	}
 
 	@POST

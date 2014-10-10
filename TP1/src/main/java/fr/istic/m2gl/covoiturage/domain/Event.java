@@ -1,5 +1,6 @@
 package fr.istic.m2gl.covoiturage.domain;
 
+import java.beans.Transient;
 import java.util.Collection;
 import java.util.Date;
 
@@ -85,6 +86,16 @@ public class Event {
 
 	public void setParticipants(Collection<User> participants) {
 		this.participants = participants;
+	}
+
+	@Transient
+	public void addParticipant(User participant) {
+		participants.add(participant);
+	}
+	
+	@Transient
+	public void removeParticipant(User participant) {
+		participants.remove(participant);
 	}
  
 }
