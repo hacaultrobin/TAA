@@ -90,17 +90,23 @@ public class CarResource implements CarService {
 	@Path("delete/{id}")
 	public void removeCar(@PathParam("id") int id) {
 		Car c = manager.find(Car.class, id);
-		User driver = c.getDriver();
-		Collection<User> passengers = c.getUsersInCar();
-		
-		EntityTransaction t = manager.getTransaction();
-		t.begin();
-		driver.setCar(null);
-		for (User p : passengers) {
-			p.setCar(null);
+		if (c != null) {
+			User driver = c.getDriver();
+			Collection<User> passengers = c.getUsersInCar();
+			
+			EntityTransaction t = manager.getTransaction();
+			t.begin();
+			if (driver != null) { 
+				driver.setCar(null);
+			}
+			if (passengers != null) {
+				for (User p : passengers) {
+					p.setCar(null);
+				}
+			}
+			manager.remove(c);
+			t.commit();
 		}
-		manager.remove(c);
-		t.commit();
 	}
 
 	@GET
@@ -108,13 +114,18 @@ public class CarResource implements CarService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public User getDriver(int id) {
 		Car car = manager.find(Car.class, id);
-		User driver = car.getDriver();
-		
-		// break cycle
-		driver.setCar(null);
-		driver.setEvent(null);
-		
-		return driver;
+		if (car != null) {
+			User driver = car.getDriver();
+			
+			if (driver != null) {
+				// break cycle
+				driver.setCar(null);
+				driver.setEvent(null);
+
+				return driver;
+			}
+		}
+		return null;		
 	}
 	
 	@POST
@@ -124,24 +135,28 @@ public class CarResource implements CarService {
 		Car car = manager.find(Car.class, idCar);
 		User driver = manager.find(User.class, idDriver);
 
-		EntityTransaction t = manager.getTransaction();
-		t.begin();
-		car.setDriver(driver);
-		driver.setCar(car);
-		t.commit();		
+		if (car != null && driver != null) {
+			EntityTransaction t = manager.getTransaction();
+			t.begin();
+			car.setDriver(driver);
+			driver.setCar(car);
+			t.commit();
+		}
 	}
 
 	@DELETE
 	@Path("driver/delete/{id}")
 	public void removeDriver(@PathParam("id") int idCar) {
 		Car car = manager.find(Car.class, idCar);
-		User driver = car.getDriver();
+		if (car != null) {
+			User driver = car.getDriver();
 
-		EntityTransaction t = manager.getTransaction();
-		t.begin();
-		car.setDriver(null);
-		driver.setCar(null);
-		t.commit();
+			EntityTransaction t = manager.getTransaction();
+			t.begin();
+			car.setDriver(null);
+			if (driver != null) { driver.setCar(null); }
+			t.commit();
+		}
 	}
 
 	@GET
@@ -149,15 +164,20 @@ public class CarResource implements CarService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<User> getPassengers(int id) {
 		Car car = manager.find(Car.class, id);
-		Collection<User> passengers = car.getUsersInCar();
-		
-		// break cycle
-		for (User p : passengers) {
-			p.setCar(null);
-			p.setEvent(null);
-		}
-		
-		return passengers;
+		if (car != null) {
+			Collection<User> passengers = car.getUsersInCar();
+			
+			if (passengers != null) {
+				// break cycle
+				for (User p : passengers) {
+					p.setCar(null);
+					p.setEvent(null);
+				}
+				
+				return passengers;
+			}
+		}		
+		return null;		
 	}
 
 	@POST
@@ -167,11 +187,13 @@ public class CarResource implements CarService {
 		Car car = manager.find(Car.class, idCar);
 		User passenger = manager.find(User.class, idUser);
 		
-		EntityTransaction t = manager.getTransaction();
-		t.begin();
-		car.addPassenger(passenger);
-		passenger.setCar(car);
-		t.commit();
+		if (car != null && passenger != null) {
+			EntityTransaction t = manager.getTransaction();
+			t.begin();
+			car.addPassenger(passenger);
+			passenger.setCar(car);
+			t.commit();
+		}
 	}
 
 	@POST
@@ -181,10 +203,12 @@ public class CarResource implements CarService {
 		Car car = manager.find(Car.class, idCar);
 		User passenger = manager.find(User.class, idUser);
 		
-		EntityTransaction t = manager.getTransaction();
-		t.begin();
-		car.removePassenger(passenger);
-		passenger.setCar(null);
-		t.commit();		
+		if (car != null && passenger != null) {
+			EntityTransaction t = manager.getTransaction();
+			t.begin();
+			car.removePassenger(passenger);
+			passenger.setCar(null);
+			t.commit();
+		}
 	}
 }
