@@ -31,3 +31,12 @@ h1 {
 #closeButton {
 	margin: 15px 6px 6px;
 }
+.right {
+	background-color: lightgreen;
+}
+.left {
+	background-color: lemonchiffon;
+}
+.main {
+	background-color: #EEE;
+}
