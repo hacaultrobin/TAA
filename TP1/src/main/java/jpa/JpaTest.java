@@ -9,9 +9,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import fr.istic.m2gl.covoiturage.domain.Car;
-import fr.istic.m2gl.covoiturage.domain.Event;
-import fr.istic.m2gl.covoiturage.domain.User;
+import fr.istic.m2gl.covoiturage.shared.Car;
+import fr.istic.m2gl.covoiturage.shared.Event;
+import fr.istic.m2gl.covoiturage.shared.User;
 
 public class JpaTest {
 

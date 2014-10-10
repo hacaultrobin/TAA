@@ -1,4 +1,4 @@
-package fr.istic.m2gl.covoiturage.service;
+package fr.istic.m2gl.covoiturage.server;
 
 import java.util.Collection;
 import java.util.Date;
@@ -18,16 +18,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import fr.istic.m2gl.covoiturage.domain.Car;
-import fr.istic.m2gl.covoiturage.domain.Event;
-import fr.istic.m2gl.covoiturage.domain.User;
+import fr.istic.m2gl.covoiturage.shared.Car;
+import fr.istic.m2gl.covoiturage.shared.Event;
+import fr.istic.m2gl.covoiturage.shared.User;
 
 @Path("/events")
-public class EventServiceImpl implements EventService {
+public class EventResource implements EventService {
 	
 	EntityManager manager;
 	
-	public EventServiceImpl () {
+	public EventResource () {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("dev");
 		manager = factory.createEntityManager();
 	}

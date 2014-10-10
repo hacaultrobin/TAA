@@ -1,4 +1,4 @@
-package fr.istic.m2gl.covoiturage.domain;
+package fr.istic.m2gl.covoiturage.shared;
 
 
 import javax.persistence.Entity;

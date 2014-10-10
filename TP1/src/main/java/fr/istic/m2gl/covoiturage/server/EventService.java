@@ -1,9 +1,9 @@
-package fr.istic.m2gl.covoiturage.service;
+package fr.istic.m2gl.covoiturage.server;
 
 import java.util.Collection;
 import java.util.Date;
 
-import fr.istic.m2gl.covoiturage.domain.Event;
+import fr.istic.m2gl.covoiturage.shared.Event;
 
 public interface EventService {
 	

@@ -1,9 +1,9 @@
-package fr.istic.m2gl.covoiturage.service;
+package fr.istic.m2gl.covoiturage.server;
 
 import java.util.Collection;
 
-import fr.istic.m2gl.covoiturage.domain.Car;
-import fr.istic.m2gl.covoiturage.domain.User;
+import fr.istic.m2gl.covoiturage.shared.Car;
+import fr.istic.m2gl.covoiturage.shared.User;
 
 /**
  * The interface CarService
