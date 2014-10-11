@@ -31,12 +31,38 @@ h1 {
 #closeButton {
 	margin: 15px 6px 6px;
 }
+
 .right {
 	background-color: lightgreen;
+	border-bottom: 1px solid #AAA;
+	border-left: 1px solid #AAA;
+	background: linear-gradient(to right, #FFF, #DDD);
 }
+
 .left {
-	background-color: lemonchiffon;
+	background: linear-gradient(to top, #FFF, #DDD);
+	border-bottom: 1px solid #AAA;
+	border-right: 1px solid #AAA;
 }
+
 .main {
 	background-color: #EEE;
+}
+
+.event-place {
+	font-weight: bold;
+	font-size: 17px;
+	padding-left: 3px;
+}
+
+.event-desc {
+	margin-bottom: 7px;
+	padding-left: 8px;
+}
+
+.event-detail-title {
+	font-weight: bold;
+	font-size: 24px;
+	text-shadow: 3px 3px 3px #BBB;
+	color: #444;
 }
