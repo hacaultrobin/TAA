@@ -97,6 +97,7 @@ public class ChatRoomImpl extends UnicastRemoteObject implements ChatRoom {
 	}
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("codebase = "+System.getProperty("java.rmi.server.codebase"));
 		try {
 			LocateRegistry.createRegistry(1099);
 		} catch (Exception e) {
