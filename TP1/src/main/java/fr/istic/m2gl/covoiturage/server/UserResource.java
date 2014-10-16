@@ -162,7 +162,7 @@ public class UserResource implements UserService {
 	}
 
 	@DELETE
-	@Path("event/delete/{id}")
+	@Path("car/delete/{id}")
 	public void leaveCar(@PathParam("id") int idUser) {
 		User user = manager.find(User.class, idUser);
 		if (user != null) {
