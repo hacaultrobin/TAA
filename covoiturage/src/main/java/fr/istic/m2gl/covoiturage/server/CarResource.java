@@ -17,7 +17,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import fr.istic.m2gl.covoiturage.db.Car;
-import fr.istic.m2gl.covoiturage.db.Event;
 import fr.istic.m2gl.covoiturage.db.User;
 
 @Path("/cars")
@@ -35,10 +34,6 @@ public class CarResource implements CarService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Car getCar(@PathParam("id") int id) {
 		Car car = manager.find(Car.class, id);
-
-		// break cycle
-		breakCycle(car);
-
 		return car;
 	}
 
@@ -46,32 +41,8 @@ public class CarResource implements CarService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<Car> getCars() {
 		@SuppressWarnings("unchecked")
-		Collection<Car> cars = manager.createQuery("select c from Car c").getResultList();
-		
-		// break cycle
-		for (Car car : cars) {
-			breakCycle(car);
-		}
-		
+		Collection<Car> cars = manager.createQuery("select c from Car c").getResultList();		
 		return cars;
-	}
-	
-	private void breakCycle(Car car) {
-		// cycle driver
-		car.getDriver().setCar(null);
-		Event e = car.getDriver().getEvent();
-		if (e != null) {
-			e.setParticipants(null);
-		}
-		
-		// cycle passenger
-		for (User p : car.getUsersInCar()) {
-			p.setCar(null);
-			Event ep = p.getEvent();
-			if (ep != null) {
-				ep.setParticipants(null);
-			}
-		}
 	}
 
 	@POST

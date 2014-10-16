@@ -7,6 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class User - Mapped with the database.
@@ -15,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class User {
 	
 	private int id;
@@ -53,6 +57,7 @@ public class User {
 	}
 	
 	@ManyToOne
+	@XmlTransient
 	public Car getCar() {
 		return car;
 	}
@@ -60,8 +65,15 @@ public class User {
 	public void setCar(Car c) {
 		this.car = c;
 	}
+	
+	@Transient
+	public Integer getCarId() {
+		if (car != null) return car.getId();
+		return null;
+	}
 
 	@ManyToOne
+	@XmlTransient
 	public Event getEvent() {
 		return event;
 	}

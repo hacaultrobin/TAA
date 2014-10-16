@@ -35,10 +35,6 @@ public class UserResource implements UserService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public User getUser(@PathParam("id") int id) {
 		User user = manager.find(User.class, id);
-
-		// break cycle
-		breakCycle(user);
-
 		return user;
 	}
 
@@ -46,32 +42,8 @@ public class UserResource implements UserService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<User> getUsers() {
 		@SuppressWarnings("unchecked")
-		Collection<User> users = manager.createQuery("select u from User u").getResultList();
-		
-		// break cycle
-		for (User user : users) {
-			breakCycle(user);
-		}
-		
+		Collection<User> users = manager.createQuery("select u from User u").getResultList();		
 		return users;
-	}
-	
-	private void breakCycle(User user) {
-		// cycle event
-		Event e = user.getEvent();
-		if (e != null) {
-			e.setParticipants(null);
-		}
-		
-		// cycle car
-		Car c = user.getCar();
-		if (c != null) {
-			if (user.isDriver()) {
-				c.setDriver(null);
-			} else {
-				c.setUsersInCar(null);
-			}
-		}
 	}
 
 	@POST

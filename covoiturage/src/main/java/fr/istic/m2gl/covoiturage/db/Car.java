@@ -1,6 +1,5 @@
 package fr.istic.m2gl.covoiturage.db;
 
-import java.beans.Transient;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -8,7 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class Car - Mapped with the database
@@ -17,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Car {
 	
 	private int id;
@@ -67,6 +71,7 @@ public class Car {
 	}
 
 	@OneToOne
+	@XmlTransient
 	public User getDriver() {
 		return driver;
 	}
@@ -74,11 +79,18 @@ public class Car {
 	public void setDriver(User driver) {
 		this.driver = driver;
 	}
+	
+	@Transient
+	public Integer getDriverId() {
+		if (driver != null) return driver.getId();
+		return null;
+	}
 
 	/**
 	 * @return Collection of all the users in the car, including the driver
 	 */
 	@OneToMany(mappedBy="car") /* Relation bidirect */
+	@XmlTransient
 	public Collection<User> getUsersInCar() {
 		return usersInCar;
 	}

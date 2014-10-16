@@ -101,7 +101,7 @@ public class Covoiturage implements EntryPoint {
 				if (selected != null) {
 					((Label) layout_right.getWidget(0)).setText("Evènement " + selected.getPlace());
 					layout_right.setVisible(true);
-					Window.alert("TODO ------> Pb parsing JSON recupération des participants d'un event");
+					//Window.alert(selected.getParticipants().getUser()+"");
 				}
 			}	      
 		});

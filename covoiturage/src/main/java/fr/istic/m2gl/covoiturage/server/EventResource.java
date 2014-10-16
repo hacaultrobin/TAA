@@ -18,7 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import fr.istic.m2gl.covoiturage.db.Car;
 import fr.istic.m2gl.covoiturage.db.Event;
 import fr.istic.m2gl.covoiturage.db.User;
 
@@ -32,30 +31,11 @@ public class EventResource implements EventService {
 		manager = factory.createEntityManager();
 	}
 	
-	/**
-	 * Break relation cycles to show an event
-	 * @param event
-	 */
-	private void breakEventCycles (Event event) {
-		Collection<User> participants = event.getParticipants();
-		for (User user : participants) {
-			user.setEvent(null);
-			Car c = user.getCar();
-			if (c != null) {
-				c.setDriver(null);
-				c.setUsersInCar(null);
-			}
-		}
-	}
-	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<Event> getEvents() {
 		@SuppressWarnings("unchecked")
-		List<Event> events = manager.createQuery("SELECT e FROM Event e").getResultList();
-		for (Event event : events) {
-			breakEventCycles(event);
-		}		
+		List<Event> events = manager.createQuery("SELECT e FROM Event e").getResultList();		
 		return events;
 	}
 
@@ -64,9 +44,6 @@ public class EventResource implements EventService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Event getEvent(@PathParam("id") int id) {
 		Event event = manager.find(Event.class, id);
-		if (event != null) {
-			breakEventCycles(event);
-		}
 		return event;
 	}
 
