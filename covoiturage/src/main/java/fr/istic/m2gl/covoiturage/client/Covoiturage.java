@@ -27,7 +27,7 @@ import fr.istic.m2gl.covoiturage.shared.IEvents;
  */
 public class Covoiturage implements EntryPoint {
 
-	private static final String REST_API_URL = "http://localhost:8080/testjpa/rest";
+	private static final String REST_API_URL = "http://localhost:8080/covoiturage/rest";
 
 	private CellList<IEvent> cellList;
 	private LayoutPanel layout_right;
