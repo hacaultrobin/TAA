@@ -14,25 +14,29 @@ import fr.istic.m2gl.covoiturage.shared.IUser;
 public class UserCell extends AbstractCell<IUser> {
 
 	/**
-	 * The HTML templates used to render a Cell representing an event
+	 * The HTML templates used to render a Cell representing an user
 	 */
 	interface Templates extends SafeHtmlTemplates {		
-		@SafeHtmlTemplates.Template("<div class='user-name'>{0}</div>"
-								  + "<div class='user-car'>Voiture {1}</div>")
-		SafeHtml makeUserCell(String username, int usercar);		
+		@SafeHtmlTemplates.Template("<div class='users-list'>"
+								  	+ "<div class='user-name'>{0}</div>"
+								  	+ "<div class='user-id'> ({1})</div>"
+								  	+ "<div class='user-car'>Voiture {2}</div>"
+								  + "</div>")
+		SafeHtml makeUserCell(String username, int userid, int usercar);
 	}
 
 	/**
-	 * Create a singleton instance of the templates used to render the cell.
+	 * Create singleton instances of the templates used to render the cell.
 	 */
 	private static Templates templates = GWT.create(Templates.class);
 
 	@Override
 	public void render(Context context, IUser value, SafeHtmlBuilder sb) {
-		if (value != null) {
+		if (value != null && value.getCarId() != null) {
 			// Use the template to create the HTML of an user Cell
-			SafeHtml user_cell_rendered = templates.makeUserCell(value.getName(), 1); // TODO car id
+			SafeHtml user_cell_rendered = templates.makeUserCell(value.getName(), value.getId(), value.getCarId());
 			sb.append(user_cell_rendered);
+
 		}		
 	}
 }

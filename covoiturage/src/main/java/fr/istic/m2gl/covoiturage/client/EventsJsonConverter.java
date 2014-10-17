@@ -38,7 +38,7 @@ public class EventsJsonConverter {
 	}
 
 	IEvents deserializeFromJson(String json) {
-		AutoBean<IEvents> bean = AutoBeanCodex.decode(factory, IEvents.class, json);
+		AutoBean<IEvents> bean = AutoBeanCodex.decode(factory, IEvents.class, "{\"events\":" + json + "}");
 		return bean.as();
 	}
 

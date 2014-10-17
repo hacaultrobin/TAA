@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface IUsers {
 	
-	void setUser(List<IUser> user);
+	void setUsers(List<IUser> user);
 	
-	List<IUser> getUser();
+	List<IUser> getUsers();
 
 }

@@ -25,12 +25,4 @@ public interface IEvent {
 
 	public void setDescription(String description);
 
-	public IUsers getParticipants();
-
-	public void setParticipants(IUsers user);
-
-	//public void addParticipant(IUser participant);
-	
-	//public void removeParticipant(IUser participant);
-
 }

@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface IEvents {
 	
-	void setEvent(List<IEvent> event);
+	void setEvents(List<IEvent> event);
 	
-	List<IEvent> getEvent();
+	List<IEvent> getEvents();
 	
 }

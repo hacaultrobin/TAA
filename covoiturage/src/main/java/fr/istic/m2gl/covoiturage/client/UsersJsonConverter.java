@@ -38,7 +38,7 @@ public class UsersJsonConverter {
 	}
 
 	IUsers deserializeFromJson(String json) {
-		AutoBean<IUsers> bean = AutoBeanCodex.decode(factory, IUsers.class, json);
+		AutoBean<IUsers> bean = AutoBeanCodex.decode(factory, IUsers.class, "{\"users\":" + json + "}");
 		return bean.as();
 	}
 
