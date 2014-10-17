@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import fr.istic.m2gl.covoiturage.db.Event;
+import fr.istic.m2gl.covoiturage.db.User;
 
 public interface EventService {
 	
@@ -12,6 +13,12 @@ public interface EventService {
 	 * @return the event designed by id
 	 */
 	public Event getEvent (int id);
+	
+	/**
+	 * @param id is the event to get users
+	 * @return the users of the event designed by id
+	 */
+	public Collection<User> getEventUsers (int id);
 	
 	/**
 	 * @return a collection of the available events

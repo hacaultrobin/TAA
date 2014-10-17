@@ -46,6 +46,15 @@ public class EventResource implements EventService {
 		Event event = manager.find(Event.class, id);
 		return event;
 	}
+	
+	@GET
+	@Path("/{id}/users")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Collection<User> getEventUsers(@PathParam("id") int id) {
+		Event event = manager.find(Event.class, id);
+		if (event != null) return event.getParticipants();
+		return null;
+	}
 
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
