@@ -17,7 +17,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import fr.istic.m2gl.covoiturage.db.Car;
 import fr.istic.m2gl.covoiturage.db.Event;
 import fr.istic.m2gl.covoiturage.db.User;
 
@@ -95,17 +97,45 @@ public class EventResource implements EventService {
 
 	@DELETE
 	@Path("/{id}/removeuser/{userid}")
-	public void leaveEvent(@PathParam("id") int idEvent, @PathParam("userid") int idUser) {
+	public Response leaveEvent(@PathParam("id") int idEvent, @PathParam("userid") int idUser) {
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 		Event event = manager.find(Event.class, idEvent);
 		User user = manager.find(User.class, idUser);
+		
 		if (event != null && user != null && user.getEvent().getId() == idEvent) {
-			Collection<User> event_users = event.getParticipants();
-			event_users.remove(user);
+			
+			boolean isDriver = user.isDriver();
+			Car car = user.getCar();
+			
+			// If user is driver but there are other passengers in his car : The others have to leave first !
+			if (isDriver && car.getUsersInCar().size() > 1) {
+				// Response : Accepted but NOT DELETED
+				tx.commit();
+				return Response.status(202).tag("The user is a driver, but there are"
+						+ " other passengers in his car. They have to leave first").build();
+			}
+			
+			// Here, user is not a driver, or is a driver but he's alone in the car	
+			
+			// Remove user from the participants of the event, and from the car
+			event.getParticipants().remove(user);
+			user.getCar().getUsersInCar().remove(user);			
 			user.setEvent(null);
-		}
+			user.setCar(null);
+			
+			if (isDriver) { // Removes the car
+				manager.remove(car);
+			}
+						
+			// Ok response, user deleted, or user + car deleted if user was alone in the car and driver
+			tx.commit();
+			return Response.status(200).build();
+			
+		}		
+		// Error response : Event not found or user to delete not in the event
 		tx.commit();
+		return Response.status(500).tag("Event not found or user to delete not in the event").build();
 	}
 
 }

@@ -40,6 +40,8 @@ public class Covoiturage implements EntryPoint {
 	private CellList<IEvent> eventsList;	
 	private LayoutPanel layout_right;
 	private CellList<IUser> usersList;
+	
+	private Button delUserFromEventButton;
 
 	/**
 	 * This is the entry point method.
@@ -121,17 +123,23 @@ public class Covoiturage implements EntryPoint {
 		layoutP_users.setWidgetTopHeight(usersScrollPanel, 25, Unit.PX, 500, Unit.PX);
 
 		// User : BUTTON Delete user from event
-		final Button delUserFromEventButton = new Button("Supprimer");
+		delUserFromEventButton = new Button("Suppr. participant");
 		delUserFromEventButton.setEnabled(false);
 		layoutP_users.add(delUserFromEventButton);
 		layoutP_users.setWidgetLeftWidth(delUserFromEventButton, 3, Unit.PX, 100, Unit.PCT);
-		layoutP_users.setWidgetTopHeight(delUserFromEventButton, 537, Unit.PX, 23, Unit.PX);
+		layoutP_users.setWidgetTopHeight(delUserFromEventButton, 535, Unit.PX, 25, Unit.PX);
 
-		// User : BUTTON Add user to the event
-		Button addUserToEventButton = new Button("Ajouter");
-		layoutP_users.add(addUserToEventButton);
-		layoutP_users.setWidgetLeftWidth(addUserToEventButton, 80, Unit.PX, 100, Unit.PCT);
-		layoutP_users.setWidgetTopHeight(addUserToEventButton, 537, Unit.PX, 23, Unit.PX);
+		// User : BUTTON Add passenger to the event
+		Button addPassengerToEventButton = new Button("Ajout passager");
+		layoutP_users.add(addPassengerToEventButton);
+		layoutP_users.setWidgetLeftWidth(addPassengerToEventButton, 125, Unit.PX, 100, Unit.PCT);
+		layoutP_users.setWidgetTopHeight(addPassengerToEventButton, 535, Unit.PX, 25, Unit.PX);
+		
+		// User : BUTTON Add passenger to the event
+		Button addDriverToEventButton = new Button("Ajout conducteur");
+		layoutP_users.add(addDriverToEventButton);
+		layoutP_users.setWidgetLeftWidth(addDriverToEventButton, 232, Unit.PX, 100, Unit.PCT);
+		layoutP_users.setWidgetTopHeight(addDriverToEventButton, 535, Unit.PX, 25, Unit.PX);
 
 
 		rootPanel.add(layoutPanel);
@@ -166,8 +174,7 @@ public class Covoiturage implements EntryPoint {
 				IEvent selectedEvent = selectionModel.getSelectedObject();
 				IUser selectedUser = selectionModelUsers.getSelectedObject();
 				if (selectedEvent != null && selectedUser != null) {
-					Window.alert("TODO : Delete " + selectedUser.getName() + " (" + selectedUser.getId() +
-							") from the event " + selectedEvent.getPlace() + " (" + selectedEvent.getId() + ")");	
+					deleteUserFromEvent(selectedUser, selectedEvent);
 				}						
 			}			
 		});
@@ -226,5 +233,34 @@ public class Covoiturage implements EntryPoint {
 		} catch (RequestException e) {
 			Window.alert("Error while retrieving the list of users =(");
 		}
+	}
+	
+	private void deleteUserFromEvent(final IUser user, final IEvent ev) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, URL.encode(REST_API_URL + "/events/"+ev.getId()+"/removeuser/"+user.getId()));
+		rb.setCallback(new RequestCallback() {			
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error while deleting the user from the event =(");			
+			}
+			public void onResponseReceived(Request req, Response res) {
+				switch(res.getStatusCode()) {
+					case 200: /* Ok, user deleted from the event */
+						// Reload the list of the event users
+						delUserFromEventButton.setEnabled(false);
+						loadEventUsers(ev);
+						// TODO Reload the list of the event cars
+						break;
+					case 202: /* Error : User is a driver and there are other passengers in his car */
+						Window.alert(user.getName() + " (" + user.getId() + ") ne peut quitter l'évènement. \n\n"
+								+ "Il conduit la voiture n°" + user.getCarId() + " qui contient d'autres passagers.\n\n"
+										+ "Ils doivent s'en aller d'abord ;-)");
+						break;
+				}
+			}			
+		});
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while deleting the user from the event =(");
+		}		
 	}
 }

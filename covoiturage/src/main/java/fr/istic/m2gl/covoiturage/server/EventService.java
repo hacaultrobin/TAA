@@ -3,6 +3,8 @@ package fr.istic.m2gl.covoiturage.server;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.ws.rs.core.Response;
+
 import fr.istic.m2gl.covoiturage.db.Event;
 import fr.istic.m2gl.covoiturage.db.User;
 
@@ -59,6 +61,6 @@ public interface EventService {
 	 * @param e The event to leave
 	 * @param user is the participant (driver or passenger) who leave the event
 	 */
-	public void leaveEvent (int idEvent, int idUser);
+	public Response leaveEvent (int idEvent, int idUser);
 	
 }
