@@ -1,0 +1,9 @@
+section#left {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	width: 25%;
+	background: linear-gradient(to top, #FFF, #DDD);
+	border-right: 1px solid #AAA;
+}
