@@ -2,8 +2,14 @@
      Contains the list of events, and a reference to the event detail template -->
 
 <section id="left">
-
-	<h1>{{content}}</h1> <!-- Sets the text from $scope.content which is in eventsCtrl (view_events.js) -->
+	
+	<ul id="list-events">
+		<li class="event-elem" ng-repeat="event in events" ui-sref="events.item({eventId: event.id})">
+			<span>{{event.place}}</span>
+			<span> - {{event.date.toLocaleDateString()}}</span>
+			<span>{{event.description}}</span>
+		</li>
+	</ul>
 	
 </section>
 

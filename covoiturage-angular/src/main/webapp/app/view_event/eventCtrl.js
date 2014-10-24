@@ -6,5 +6,5 @@ covoitApp.controller('eventCtrl', ['$scope', '$stateParams', function($scope, $s
 	// Controlleur fils de eventsCtrl --> Accès au scope de eventsCtrl
 	
 	$scope.eventId = $stateParams.eventId;
-  
+	  
 }]);
