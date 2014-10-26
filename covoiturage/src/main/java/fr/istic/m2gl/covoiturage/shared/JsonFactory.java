@@ -11,4 +11,7 @@ public interface JsonFactory extends AutoBeanFactory {
   AutoBean<IUser> user();
   AutoBean<IUsers> users();
   
+  AutoBean<ICar> car();
+  AutoBean<ICars> cars();
+  
 }

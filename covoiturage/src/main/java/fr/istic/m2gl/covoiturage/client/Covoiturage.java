@@ -26,6 +26,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import fr.istic.m2gl.covoiturage.shared.ICar;
 import fr.istic.m2gl.covoiturage.shared.IEvent;
 import fr.istic.m2gl.covoiturage.shared.IEvents;
 import fr.istic.m2gl.covoiturage.shared.IUser;
@@ -40,7 +41,8 @@ public class Covoiturage implements EntryPoint {
 	private CellList<IEvent> eventsList;	
 	private LayoutPanel layout_right;
 	private CellList<IUser> usersList;
-	
+	private CellList<ICar> carsList;
+
 	private Button delUserFromEventButton;
 
 	/**
@@ -94,11 +96,11 @@ public class Covoiturage implements EntryPoint {
 		layout_right.setWidgetTopHeight(layoutP_cars, 35, Unit.PX, 560, Unit.PX);
 		layout_right.setWidgetLeftWidth(layoutP_users, 0, Unit.PX, 50.0, Unit.PCT);
 		layout_right.setWidgetLeftWidth(layoutP_cars, 50, Unit.PCT, 50.0, Unit.PCT);		
-		Label event_users_label = new Label("Participants (TODO : Liste des participants + suppr participant + ajout passager)");
+		Label event_users_label = new Label("Participants");
 		event_users_label.setStyleName("event-detail-users-label");
 		event_users_label.setAutoHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		layoutP_users.add(event_users_label);		
-		Label event_cars_label = new Label("Voitures (TODO : Liste des voitures + suppr voiture + ajout conducteur avec sa voiture)");
+		Label event_cars_label = new Label("Voitures");
 		event_cars_label.setStyleName("event-detail-cars-label");
 		event_cars_label.setAutoHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		layoutP_cars.add(event_cars_label);
@@ -115,7 +117,7 @@ public class Covoiturage implements EntryPoint {
 				return (item == null) ? null : item.getId();
 			}
 		};    
-		// Create a CellList using the keyProvider, for the events list
+		// Create a CellList using the keyProvider, for the users list
 		usersList = new CellList<IUser>(new UserCell(), usersKeyProvider);
 		final SingleSelectionModel<IUser> selectionModelUsers = new SingleSelectionModel<IUser>();		
 		usersList.setSelectionModel(selectionModelUsers);
@@ -134,16 +136,29 @@ public class Covoiturage implements EntryPoint {
 		layoutP_users.add(addPassengerToEventButton);
 		layoutP_users.setWidgetLeftWidth(addPassengerToEventButton, 125, Unit.PX, 100, Unit.PCT);
 		layoutP_users.setWidgetTopHeight(addPassengerToEventButton, 535, Unit.PX, 25, Unit.PX);
-		
+
 		// User : BUTTON Add passenger to the event
 		Button addDriverToEventButton = new Button("Ajout conducteur");
 		layoutP_users.add(addDriverToEventButton);
 		layoutP_users.setWidgetLeftWidth(addDriverToEventButton, 232, Unit.PX, 100, Unit.PCT);
 		layoutP_users.setWidgetTopHeight(addDriverToEventButton, 535, Unit.PX, 25, Unit.PX);
 
+		// KeyProvider for the cars of the selected event
+		ProvidesKey<ICar> carsKeyProvider = new ProvidesKey<ICar>() {
+			public Object getKey(ICar item) {
+				return (item == null) ? null : item.getId();
+			}
+		};    
+		// Create a CellList using the keyProvider, for the users list
+		carsList = new CellList<ICar>(new CarCell(), carsKeyProvider);
+		final SingleSelectionModel<ICar> selectionModelCars = new SingleSelectionModel<ICar>();		
+		carsList.setSelectionModel(selectionModelCars);
+		carsScrollPanel.add(carsList);
+		layoutP_cars.setWidgetTopHeight(carsScrollPanel, 25, Unit.PX, 500, Unit.PX);
+
 
 		rootPanel.add(layoutPanel);
-		
+
 
 		/* -------- CLICK EVENTS -------- */
 
@@ -156,6 +171,7 @@ public class Covoiturage implements EntryPoint {
 					delUserFromEventButton.setEnabled(false);
 					layout_right.setVisible(true);
 					loadEventUsers(selected);
+					loadEventCars(selected);
 
 				}
 			}	      
@@ -167,7 +183,7 @@ public class Covoiturage implements EntryPoint {
 				delUserFromEventButton.setEnabled(true);
 			}	      
 		});
-		
+
 		// Click event on Delete user button		
 		delUserFromEventButton.addClickHandler(new ClickHandler () {
 			public void onClick(ClickEvent event) {
@@ -223,7 +239,7 @@ public class Covoiturage implements EntryPoint {
 				if (res.getStatusCode() == 200) {
 					List<IUser> users = UsersJsonConverter.getInstance().deserializeFromJson(res.getText()).getUsers();
 					usersList.setRowCount(users.size(), true);
-					usersList.setRowData(0, users);
+					usersList.setRowData(0, users);					
 				}
 			}			
 		});
@@ -235,6 +251,32 @@ public class Covoiturage implements EntryPoint {
 		}
 	}
 	
+	/**
+	 * Load all the cars which participates to the event ev
+	 * @param ev The event on which we will load cars
+	 */
+	private void loadEventCars(IEvent ev) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, URL.encode(REST_API_URL + "/events/"+ev.getId()+"/cars"));
+		rb.setCallback(new RequestCallback() {
+			public void onError(Request req, Throwable th) {
+				Window.alert("Error while retrieving the list of cars =(");
+			}
+			public void onResponseReceived(Request req, Response res) {				
+				if (res.getStatusCode() == 200) {
+					List<ICar> cars = CarsJsonConverter.getInstance().deserializeFromJson(res.getText()).getCars();
+					carsList.setRowCount(cars.size(), true);
+					carsList.setRowData(0, cars);					
+				}
+			}			
+		});
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while retrieving the list of cars =(");
+		}
+	}
+
 	private void deleteUserFromEvent(final IUser user, final IEvent ev) {
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, URL.encode(REST_API_URL + "/events/"+ev.getId()+"/removeuser/"+user.getId()));
 		rb.setCallback(new RequestCallback() {			
@@ -243,17 +285,17 @@ public class Covoiturage implements EntryPoint {
 			}
 			public void onResponseReceived(Request req, Response res) {
 				switch(res.getStatusCode()) {
-					case 200: /* Ok, user deleted from the event */
-						// Reload the list of the event users
-						delUserFromEventButton.setEnabled(false);
-						loadEventUsers(ev);
-						// TODO Reload the list of the event cars
-						break;
-					case 202: /* Error : User is a driver and there are other passengers in his car */
-						Window.alert(user.getName() + " (" + user.getId() + ") ne peut quitter l'évènement. \n\n"
-								+ "Il conduit la voiture n°" + user.getCarId() + " qui contient d'autres passagers.\n\n"
-										+ "Ils doivent s'en aller d'abord ;-)");
-						break;
+				case 200: /* Ok, user deleted from the event */
+					// Reload the list of the event users
+					delUserFromEventButton.setEnabled(false);
+					loadEventUsers(ev);
+					loadEventCars(ev);
+					break;
+				case 202: /* Error : User is a driver and there are other passengers in his car */
+					Window.alert(user.getName() + " (" + user.getId() + ") ne peut quitter l'évènement. \n\n"
+							+ "Il conduit la voiture n°" + user.getCarId() + " qui contient d'autres passagers.\n\n"
+							+ "Ils doivent s'en aller d'abord ;-)");
+					break;
 				}
 			}			
 		});

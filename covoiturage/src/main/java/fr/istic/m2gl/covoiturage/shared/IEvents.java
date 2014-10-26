@@ -3,8 +3,7 @@ package fr.istic.m2gl.covoiturage.shared;
 import java.util.List;
 
 /*
- * { "event": [ ... ] }
- * Getter/setter suffix equivalent to the field name
+ * { "events": [ ... ] }
  */
 
 public interface IEvents {

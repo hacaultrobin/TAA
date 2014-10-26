@@ -2,7 +2,9 @@ package fr.istic.m2gl.covoiturage.server;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -55,6 +57,22 @@ public class EventResource implements EventService {
 	public Collection<User> getEventUsers(@PathParam("id") int id) {
 		Event event = manager.find(Event.class, id);
 		if (event != null) return event.getParticipants();
+		return null;
+	}
+	
+	@GET
+	@Path("/{id}/cars")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Collection<Car> getEventCars(@PathParam("id") int id) {
+		Event event = manager.find(Event.class, id);
+		if (event != null) {
+			Collection<User> participants = event.getParticipants();
+			Map<Integer, Car> eventCarMap = new HashMap<Integer, Car>();
+			for (User u : participants) {
+				eventCarMap.putIfAbsent(u.getCarId(), u.getCar());
+			}
+			return eventCarMap.values();
+		}
 		return null;
 	}
 

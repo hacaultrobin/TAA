@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.ws.rs.core.Response;
 
+import fr.istic.m2gl.covoiturage.db.Car;
 import fr.istic.m2gl.covoiturage.db.Event;
 import fr.istic.m2gl.covoiturage.db.User;
 
@@ -21,6 +22,12 @@ public interface EventService {
 	 * @return the users of the event designed by id
 	 */
 	public Collection<User> getEventUsers (int id);
+	
+	/**
+	 * @param id is the event to get cars
+	 * @return the cars of the event designed by id
+	 */
+	public Collection<Car> getEventCars (int id);
 	
 	/**
 	 * @return a collection of the available events

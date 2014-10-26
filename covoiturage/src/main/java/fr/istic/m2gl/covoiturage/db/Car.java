@@ -34,7 +34,7 @@ public class Car {
 	/* The driver */
 	private User driver;
 	
-	/* The list of all users in the car, including thr driver */
+	/* The list of all users in the car, including the driver */
 	private Collection<User> usersInCar;
 	
 	public Car () {}
@@ -68,6 +68,11 @@ public class Car {
 
 	public void setNbSeat(int nbSeat) {
 		this.nbSeat = nbSeat;
+	}
+	
+	@Transient
+	public int getNbAvailableSeat() {
+		return this.nbSeat - this.getUsersInCar().size();
 	}
 
 	@OneToOne
