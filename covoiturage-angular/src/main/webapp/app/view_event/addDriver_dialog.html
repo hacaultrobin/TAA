@@ -1,0 +1,9 @@
+<div id="add-driver-dialog">
+	<h1>Ajout d'un conducteur</h1>
+	<span>Nom</span><input type="text" ng-model="driverForm.name">
+	<h2>Voiture</h2>
+	<span>Modèle</span><input type="text" ng-model="driverForm.carModel">
+	<br>
+	<span>Nombre de sièges</span><input ng-model="driverForm.carSeats" id="nbSeats" type="number" min="1">
+	<button ng-click="validateAddDriver(driverForm)">Valider</button>
+</div>

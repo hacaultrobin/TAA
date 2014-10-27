@@ -1,6 +1,6 @@
 'use strict';
 
-var covoitApp = angular.module('covoitApp', ['ui.router']);
+var covoitApp = angular.module('covoitApp', ['ui.router', 'ngDialog']);
 
 covoitApp.config(function($stateProvider, $urlRouterProvider) {
 

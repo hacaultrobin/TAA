@@ -1,6 +1,8 @@
 'use strict';
 
 covoitApp.controller('eventsCtrl', ['$scope', 'daoEvents', function($scope, daoEvents) {
+	
+	$scope.loadEventsOk = false;
 
 	/* Gets the list of events using the service daoEvents */
 	daoEvents.getAllEvents(function (data) {
@@ -9,7 +11,7 @@ covoitApp.controller('eventsCtrl', ['$scope', 'daoEvents', function($scope, daoE
 			data[i].date = d;
 		}		
 		$scope.events = data;
-		console.log(data);
+		$scope.loadEventsOk = true;
 	});
 
 }]);
