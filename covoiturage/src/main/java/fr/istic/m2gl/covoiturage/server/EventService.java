@@ -49,19 +49,22 @@ public interface EventService {
 	public void removeEvent(int idEvent);	
 	
 	/**
-	 * Add passenger to the event e if cars are available
-	 * @param e is the event to join
-	 * @param passenger is the user to add to the event
+	 * Create a new user and add him as a PASSENGER to the event if seats are available
+	 * @param idEvent is the id of the event to join
+	 * @param namePassenger is the name of the user to create and to add to the event as a passenger
+	 * @return an HTTP Response, status 200 (added) or 202 (not added -> no seats)
 	 */
-	public void joinEvent (int idEvent, int idDriver);
+	public Response joinEvent (int idEvent, String namePassenger);	
 	
 	/**
-	 * Add driver to the event e, who is the driver of the car c
-	 * @param e is the event to join
-	 * @param driver is the user to add to the event and who will drive the car c
-	 * @param c is the car added to the event
+	 * Create a new user and a new car and add him as a DRIVER to the event, with his new car
+	 * @param idEvent is the id of the event to join
+	 * @param nameDriver is the name of the user to create and to add to the event as a driver
+	 * @param modelCar is the model of the car drived by nameDriver to create and to add to the event
+	 * @param nbSeatsCar is the nbSeats of the car
+	 * @return an HTTP Response, status 200 (added) or 202 (not added -> no seats)
 	 */
-	public void joinEventWithCar (int idEvent, int idDriver, int idCar);
+	public Response joinEventWithCar (int idEvent, String nameDriver, String modelCar, int nbSeatsCar);
 	
 	/**
 	 * Delete user from e, and user's car if he's the driver 

@@ -50,7 +50,7 @@ public class UserResource implements UserService {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void addUser(@QueryParam("name") String name) {
 		User user = new User(name);
-
+		
 		EntityTransaction t = manager.getTransaction();
 		t.begin();
 		manager.persist(user);

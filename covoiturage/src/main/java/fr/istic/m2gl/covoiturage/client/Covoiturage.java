@@ -43,6 +43,8 @@ public class Covoiturage implements EntryPoint {
 	private CellList<IUser> usersList;
 	private CellList<ICar> carsList;
 
+	private IEvent selectedEvent;
+
 	private Button delUserFromEventButton;
 
 	/**
@@ -136,12 +138,26 @@ public class Covoiturage implements EntryPoint {
 		layoutP_users.add(addPassengerToEventButton);
 		layoutP_users.setWidgetLeftWidth(addPassengerToEventButton, 125, Unit.PX, 100, Unit.PCT);
 		layoutP_users.setWidgetTopHeight(addPassengerToEventButton, 535, Unit.PX, 25, Unit.PX);
+		addPassengerToEventButton.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				// Instantiate the dialog box and show it.
+				DialogAddUser dialog = new DialogAddUser(false, Covoiturage.this, selectedEvent);
+				dialog.center();
+			}
+		});
 
 		// User : BUTTON Add passenger to the event
 		Button addDriverToEventButton = new Button("Ajout conducteur");
 		layoutP_users.add(addDriverToEventButton);
 		layoutP_users.setWidgetLeftWidth(addDriverToEventButton, 232, Unit.PX, 100, Unit.PCT);
 		layoutP_users.setWidgetTopHeight(addDriverToEventButton, 535, Unit.PX, 25, Unit.PX);
+		addDriverToEventButton.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				// Instantiate the dialog box and show it.
+				DialogAddUser dialog = new DialogAddUser(true, Covoiturage.this, selectedEvent);
+				dialog.center();
+			}
+		});
 
 		// KeyProvider for the cars of the selected event
 		ProvidesKey<ICar> carsKeyProvider = new ProvidesKey<ICar>() {
@@ -165,13 +181,13 @@ public class Covoiturage implements EntryPoint {
 		// Events when an element is selected in the list of events
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {	    	
 			public void onSelectionChange(SelectionChangeEvent event) {
-				IEvent selected = selectionModel.getSelectedObject();
-				if (selected != null) {
-					((Label) layout_right.getWidget(0)).setText("Evènement " + selected.getPlace());
+				selectedEvent = selectionModel.getSelectedObject();
+				if (selectedEvent != null) {
+					((Label) layout_right.getWidget(0)).setText("Evènement " + selectedEvent.getPlace());
 					delUserFromEventButton.setEnabled(false);
 					layout_right.setVisible(true);
-					loadEventUsers(selected);
-					loadEventCars(selected);
+					loadEventUsers(selectedEvent);
+					loadEventCars(selectedEvent);
 
 				}
 			}	      
@@ -250,7 +266,7 @@ public class Covoiturage implements EntryPoint {
 			Window.alert("Error while retrieving the list of users =(");
 		}
 	}
-	
+
 	/**
 	 * Load all the cars which participates to the event ev
 	 * @param ev The event on which we will load cars
@@ -304,5 +320,38 @@ public class Covoiturage implements EntryPoint {
 		} catch (RequestException e) {
 			Window.alert("Error while deleting the user from the event =(");
 		}		
+	}
+
+	protected void addPassengerToEvent(final IEvent ev, final String userName) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, URL.encode(REST_API_URL + "/events/"+ev.getId()+"/join"));
+		rb.setHeader("Content-Type","application/x-www-form-urlencoded");
+		rb.setRequestData(URL.encode("username=" + userName));
+		rb.setCallback(new RequestCallback() {			
+			public void onResponseReceived(Request req, Response res) {
+				switch(res.getStatusCode()) {
+					case 200:
+						loadEventUsers(ev);
+						loadEventCars(ev);
+						break;
+					case 202:
+						Window.alert(userName + " n'a pu rejoindre l'évènement car il n'y a pas de sièges disponibles");
+						break;
+				}
+			}			
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error while adding the user to the event =(");			
+			}
+		});
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while adding the user to the event =(");	
+		}
+	}
+
+	protected void addDriverToEvent(IEvent ev, String userName, String carModel, int carNbSeats) {
+
+		// TODO Not implemented
+		
 	}
 }

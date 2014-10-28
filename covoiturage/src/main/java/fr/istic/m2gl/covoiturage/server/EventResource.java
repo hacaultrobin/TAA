@@ -12,6 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -65,15 +66,19 @@ public class EventResource implements EventService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<Car> getEventCars(@PathParam("id") int id) {
 		Event event = manager.find(Event.class, id);
-		if (event != null) {
-			Collection<User> participants = event.getParticipants();
-			Map<Integer, Car> eventCarMap = new HashMap<Integer, Car>();
-			for (User u : participants) {
-				eventCarMap.putIfAbsent(u.getCarId(), u.getCar());
-			}
-			return eventCarMap.values();
+		if (event != null) {			
+			return getCarsFromEvent(event);
 		}
 		return null;
+	}
+	
+	private Collection<Car> getCarsFromEvent(Event ev) {
+		Collection<User> participants = ev.getParticipants();
+		Map<Integer, Car> eventCarMap = new HashMap<Integer, Car>();
+		for (User u : participants) {
+			eventCarMap.putIfAbsent(u.getCarId(), u.getCar());
+		}
+		return eventCarMap.values();
 	}
 
 	@POST
@@ -99,18 +104,39 @@ public class EventResource implements EventService {
 
 	@POST
 	@Path("/{id}/join")
-	@Consumes({MediaType.APPLICATION_JSON})
-	public void joinEvent(@PathParam("id") int idEvent, @QueryParam("userid") int idPassenger) {
-		// TODO Auto-generated method stub
-
+	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+	public Response joinEvent(@PathParam("id") int idEvent, @FormParam("username") String namePassenger) {
+		if (namePassenger == null) return Response.serverError().tag("null").build();
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		Event event = manager.find(Event.class, idEvent);
+		if (event != null) {
+			Collection<Car> cars = getCarsFromEvent(event);
+			for (Car c : cars) {
+				if (c.getNbAvailableSeat() > 0) {
+					User newPassenger = new User(namePassenger);
+					manager.persist(newPassenger);
+					newPassenger.setEvent(event);
+					newPassenger.setCar(c);
+					tx.commit();
+					return Response.status(200).tag("New passenger added to car " + c.getId()).build();
+				}
+			}
+			tx.commit();
+			return Response.status(202).tag("New passenger was not added - No seats available").build();
+		}
+		tx.commit();
+		return Response.serverError().tag("Event not found").build();
 	}
 
 	@POST
 	@Path("/{id}/joindriver")
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void joinEventWithCar(@PathParam("id") int idEvent, @QueryParam("userid") int idDriver, @QueryParam("carid") int idCar) {
-		// TODO Auto-generated method stub
-
+	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+	public Response joinEventWithCar(@PathParam("id") int idEvent, @FormParam("username") String namePassenger, @FormParam("modelcar") String modelCar, @FormParam("nbseatscar") int nbseatscar) {
+		
+		// TODO Not implemented
+		
+		return Response.status(200).build();
 	}
 
 	@DELETE
@@ -145,6 +171,9 @@ public class EventResource implements EventService {
 			if (isDriver) { // Removes the car
 				manager.remove(car);
 			}
+			
+			// Removes the user
+			manager.remove(user);
 						
 			// Ok response, user deleted, or user + car deleted if user was alone in the car and driver
 			tx.commit();
