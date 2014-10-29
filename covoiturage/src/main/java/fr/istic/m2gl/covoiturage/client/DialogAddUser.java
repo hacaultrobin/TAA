@@ -110,6 +110,7 @@ public class DialogAddUser extends DialogBox {
 								Window.alert("Entrez un nombre de sièges correct");
 							} else {
 								view.addDriverToEvent(ev, userName, carModel, nbSeats);
+								DialogAddUser.this.hide();
 							}
 						} catch (NumberFormatException e) {
 							Window.alert("Entrez un nombre de sièges correct");

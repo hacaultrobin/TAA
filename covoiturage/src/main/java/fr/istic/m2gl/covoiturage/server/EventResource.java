@@ -18,7 +18,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,14 +27,14 @@ import fr.istic.m2gl.covoiturage.db.User;
 
 @Path("/events")
 public class EventResource implements EventService {
-	
+
 	EntityManager manager;
-	
+
 	public EventResource () {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("dev");
 		manager = factory.createEntityManager();
 	}
-	
+
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<Event> getEvents() {
@@ -51,7 +50,7 @@ public class EventResource implements EventService {
 		Event event = manager.find(Event.class, id);
 		return event;
 	}
-	
+
 	@GET
 	@Path("/{id}/users")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -60,7 +59,7 @@ public class EventResource implements EventService {
 		if (event != null) return event.getParticipants();
 		return null;
 	}
-	
+
 	@GET
 	@Path("/{id}/cars")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -71,7 +70,7 @@ public class EventResource implements EventService {
 		}
 		return null;
 	}
-	
+
 	private Collection<Car> getCarsFromEvent(Event ev) {
 		Collection<User> participants = ev.getParticipants();
 		Map<Integer, Car> eventCarMap = new HashMap<Integer, Car>();
@@ -82,31 +81,49 @@ public class EventResource implements EventService {
 	}
 
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON})
-	public void addEvent(@QueryParam("date") Date d, @QueryParam("lieu") String lieu, @QueryParam("desc") String desc) {
-		// TODO Auto-generated method stub
-
+	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+	public Response addEvent(@FormParam("date") Date date, @FormParam("place") String place, @FormParam("desc") String desc) {
+		if (date == null || place == null || desc == null) {
+			return Response.serverError().tag("Error with params date or place or desc").build();
+		}
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		Event ev = new Event(date, place, desc);
+		manager.persist(ev);
+		tx.commit();
+		return Response.status(200).tag("Event added").build();
 	}
 
 	@DELETE
 	@Path("/{id}")
-	public void removeEvent(@PathParam("id") int idEvent) {
+	public Response removeEvent(@PathParam("id") int idEvent) {
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 		Event event = manager.find(Event.class, idEvent);
-		Collection<User> participants = event.getParticipants();
-		for (User user : participants) {
-			user.setEvent(null);
+		if (event != null) {
+			Collection<User> participants = event.getParticipants();
+			Collection<Car> cars = getCarsFromEvent(event);
+			for (User u : participants) {
+				manager.remove(u);
+			}
+			for (Car c : cars) {
+				manager.remove(c);
+			}
+			manager.remove(event);
+			tx.commit();
+			return Response.status(200).tag("Event removed with the users and cars").build();
 		}
-		manager.remove(event);
 		tx.commit();
+		return Response.status(202).tag("Event already removed").build();
 	}
 
 	@POST
 	@Path("/{id}/join")
 	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
 	public Response joinEvent(@PathParam("id") int idEvent, @FormParam("username") String namePassenger) {
-		if (namePassenger == null) return Response.serverError().tag("null").build();
+		if (namePassenger == null) {
+			return Response.serverError().tag("Error with param username").build();
+		}
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 		Event event = manager.find(Event.class, idEvent);
@@ -132,11 +149,26 @@ public class EventResource implements EventService {
 	@POST
 	@Path("/{id}/joindriver")
 	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
-	public Response joinEventWithCar(@PathParam("id") int idEvent, @FormParam("username") String namePassenger, @FormParam("modelcar") String modelCar, @FormParam("nbseatscar") int nbseatscar) {
-		
-		// TODO Not implemented
-		
-		return Response.status(200).build();
+	public Response joinEventWithCar(@PathParam("id") int idEvent, @FormParam("username") String nameDriver, @FormParam("modelcar") String modelCar, @FormParam("nbseatscar") Integer nbSeatsCar) {
+		if (nameDriver == null || modelCar == null || nbSeatsCar == null || nbSeatsCar < 1) {
+			return Response.serverError().tag("Error with params username or modelcar or nbseatscar").build();
+		}
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+		Event event = manager.find(Event.class, idEvent);
+		if (event != null) {
+			User newDriver = new User(nameDriver);
+			manager.persist(newDriver);
+			newDriver.setEvent(event);
+			Car newCar = new Car(modelCar, nbSeatsCar);
+			manager.persist(newCar);
+			newCar.setDriver(newDriver);
+			newDriver.setCar(newCar);
+			tx.commit();
+			return Response.status(200).tag("New driver added in the new car " + newCar.getId()).build();
+		}
+		tx.commit();
+		return Response.serverError().tag("Event not found").build();
 	}
 
 	@DELETE
@@ -146,12 +178,12 @@ public class EventResource implements EventService {
 		tx.begin();
 		Event event = manager.find(Event.class, idEvent);
 		User user = manager.find(User.class, idUser);
-		
+
 		if (event != null && user != null && user.getEvent().getId() == idEvent) {
-			
+
 			boolean isDriver = user.isDriver();
 			Car car = user.getCar();
-			
+
 			// If user is driver but there are other passengers in his car : The others have to leave first !
 			if (isDriver && car.getUsersInCar().size() > 1) {
 				// Response : Accepted but NOT DELETED
@@ -159,26 +191,26 @@ public class EventResource implements EventService {
 				return Response.status(202).tag("The user is a driver, but there are"
 						+ " other passengers in his car. They have to leave first").build();
 			}
-			
+
 			// Here, user is not a driver, or is a driver but he's alone in the car	
-			
+
 			// Remove user from the participants of the event, and from the car
 			event.getParticipants().remove(user);
 			user.getCar().getUsersInCar().remove(user);			
 			user.setEvent(null);
 			user.setCar(null);
-			
+
 			if (isDriver) { // Removes the car
 				manager.remove(car);
 			}
-			
+
 			// Removes the user
 			manager.remove(user);
-						
+
 			// Ok response, user deleted, or user + car deleted if user was alone in the car and driver
 			tx.commit();
 			return Response.status(200).build();
-			
+
 		}		
 		// Error response : Event not found or user to delete not in the event
 		tx.commit();

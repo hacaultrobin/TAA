@@ -34,7 +34,7 @@ public class EventCell extends AbstractCell<IEvent> {
 	public void render(Context context, IEvent value, SafeHtmlBuilder sb) {
 		if (value != null) {
 			// Use the template to create the HTML of an event Cell
-			String date = DateTimeFormat.getFormat("dd/MM/yyyy à HH:mm").format(value.getDate());
+			String date = DateTimeFormat.getFormat("dd/MM/yyyy").format(value.getDate());
 			SafeHtml event_cell_rendered = templates.makeEventCell(value.getPlace(), date, value.getDescription());
 			sb.append(event_cell_rendered);
 		}		

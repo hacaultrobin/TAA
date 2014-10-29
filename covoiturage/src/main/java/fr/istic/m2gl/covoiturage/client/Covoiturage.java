@@ -1,6 +1,7 @@
 package fr.istic.m2gl.covoiturage.client;
 
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -14,6 +15,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -39,12 +41,13 @@ public class Covoiturage implements EntryPoint {
 	private static final String REST_API_URL = GWT.getHostPageBaseURL() + "covoiturage/rest";
 
 	private CellList<IEvent> eventsList;	
-	private LayoutPanel layout_right;
+	private LayoutPanel layout_left, layout_right;
 	private CellList<IUser> usersList;
 	private CellList<ICar> carsList;
 
 	private IEvent selectedEvent;
 
+	private Button supprEventButton;
 	private Button delUserFromEventButton;
 
 	/**
@@ -56,6 +59,18 @@ public class Covoiturage implements EntryPoint {
 
 		LayoutPanel layoutPanel = new LayoutPanel();		
 		layoutPanel.setSize("100%", "600px");
+		
+		// Create the left panel (event list)
+		layout_left = new LayoutPanel();
+		layout_left.setStyleName("left");
+		layoutPanel.add(layout_left);
+		layoutPanel.setWidgetTopHeight(layout_left, 0.0, Unit.PX, 100.0, Unit.PCT);
+		
+		// ScrollPanel for the events list
+		ScrollPanel eventsScrollPanel = new ScrollPanel();
+		layout_left.add(eventsScrollPanel);
+		layout_left.setWidgetTopHeight(eventsScrollPanel, 0.0, Unit.PX, 550, Unit.PX);
+		layout_left.setWidgetLeftWidth(eventsScrollPanel, 0.0, Unit.PX, 100, Unit.PCT);
 
 		ProvidesKey<IEvent> eventKeyProvider = new ProvidesKey<IEvent>() {
 			public Object getKey(IEvent item) {
@@ -68,8 +83,31 @@ public class Covoiturage implements EntryPoint {
 		final SingleSelectionModel<IEvent> selectionModel = new SingleSelectionModel<IEvent>();		
 		eventsList.setSelectionModel(selectionModel);
 		eventsList.addStyleName("left");
-
-		layoutPanel.add(eventsList);	
+		eventsScrollPanel.add(eventsList);
+		
+		// Create delete/add event Buttons
+		supprEventButton = new Button("Suppr. Evènement");
+		Button addEventButton = new Button("Ajout. Evènement");
+		layout_left.add(supprEventButton);
+		layout_left.add(addEventButton);
+		layout_left.setWidgetLeftWidth(supprEventButton, 3, Unit.PX, 100, Unit.PCT);
+		layout_left.setWidgetTopHeight(supprEventButton, 570, Unit.PX, 25, Unit.PX);
+		layout_left.setWidgetLeftWidth(addEventButton, 131, Unit.PX, 100, Unit.PCT);
+		layout_left.setWidgetTopHeight(addEventButton, 570, Unit.PX, 25, Unit.PX);
+		addEventButton.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				DialogAddEvent dialog = new DialogAddEvent(Covoiturage.this);
+				dialog.center();
+			}
+		});	
+		supprEventButton.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				if (selectedEvent != null) {
+					deleteEvent(selectedEvent);
+				}
+			}
+		});	
+		supprEventButton.setEnabled(false);
 
 		// Create the right panel (event detail)
 		layout_right = new LayoutPanel();
@@ -171,8 +209,7 @@ public class Covoiturage implements EntryPoint {
 		carsList.setSelectionModel(selectionModelCars);
 		carsScrollPanel.add(carsList);
 		layoutP_cars.setWidgetTopHeight(carsScrollPanel, 25, Unit.PX, 500, Unit.PX);
-
-
+		
 		rootPanel.add(layoutPanel);
 
 
@@ -183,6 +220,7 @@ public class Covoiturage implements EntryPoint {
 			public void onSelectionChange(SelectionChangeEvent event) {
 				selectedEvent = selectionModel.getSelectedObject();
 				if (selectedEvent != null) {
+					supprEventButton.setEnabled(true);
 					((Label) layout_right.getWidget(0)).setText("Evènement " + selectedEvent.getPlace());
 					delUserFromEventButton.setEnabled(false);
 					layout_right.setVisible(true);
@@ -329,29 +367,87 @@ public class Covoiturage implements EntryPoint {
 		rb.setCallback(new RequestCallback() {			
 			public void onResponseReceived(Request req, Response res) {
 				switch(res.getStatusCode()) {
-					case 200:
-						loadEventUsers(ev);
-						loadEventCars(ev);
-						break;
-					case 202:
-						Window.alert(userName + " n'a pu rejoindre l'évènement car il n'y a pas de sièges disponibles");
-						break;
+				case 200:
+					loadEventUsers(ev);
+					loadEventCars(ev);
+					break;
+				case 202:
+					Window.alert(userName + " n'a pu rejoindre l'évènement car il n'y a pas de sièges disponibles");
+					break;
 				}
 			}			
 			public void onError(Request request, Throwable exception) {
-				Window.alert("Error while adding the user to the event =(");			
+				Window.alert("Error while adding the passenger to the event =(");			
 			}
 		});
 		try {
 			rb.send();
 		} catch (RequestException e) {
-			Window.alert("Error while adding the user to the event =(");	
+			Window.alert("Error while adding the passenger to the event =(");	
 		}
 	}
 
-	protected void addDriverToEvent(IEvent ev, String userName, String carModel, int carNbSeats) {
-
-		// TODO Not implemented
-		
+	protected void addDriverToEvent(final IEvent ev, String userName, String carModel, int carNbSeats) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, URL.encode(REST_API_URL + "/events/"+ev.getId()+"/joindriver"));
+		rb.setHeader("Content-Type","application/x-www-form-urlencoded");
+		rb.setRequestData(URL.encode("username=" + userName + "&modelcar=" + carModel + "&nbseatscar=" + carNbSeats));
+		rb.setCallback(new RequestCallback() {			
+			public void onResponseReceived(Request req, Response res) {
+				if (res.getStatusCode() == 200) {
+					loadEventUsers(ev);
+					loadEventCars(ev);				
+				}
+			}			
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error while adding the driver to the event =(");			
+			}
+		});
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while adding the driver to the event =(");	
+		}
+	}
+	
+	private void deleteEvent(IEvent ev) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, URL.encode(REST_API_URL + "/events/"+ev.getId()));
+		rb.setCallback(new RequestCallback() {			
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error while deleting the event =(");			
+			}
+			public void onResponseReceived(Request req, Response res) {
+				selectedEvent = null;
+				supprEventButton.setEnabled(false);
+				layout_right.setVisible(false);
+				loadAllEvents();
+			}			
+		});
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while deleting the event =(");
+		}		
+	}
+	
+	protected void addEvent(Date date, String place, String desc) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, URL.encode(REST_API_URL + "/events"));
+		rb.setHeader("Content-Type","application/x-www-form-urlencoded");
+		DateTimeFormat df = DateTimeFormat.getFormat("yyyy MMM dd");
+		rb.setRequestData(URL.encode("date=" + df.format(date) + "&place=" + place + "&desc=" + desc));
+		rb.setCallback(new RequestCallback() {			
+			public void onResponseReceived(Request req, Response res) {
+				if (res.getStatusCode() == 200) {
+					loadAllEvents();
+				}				
+			}			
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error while adding the event =(");			
+			}
+		});
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error while adding the event =(");	
+		}
 	}
 }

@@ -39,14 +39,16 @@ public interface EventService {
 	 * @param d is the date of the event
 	 * @param lieu indicates where it takes place
 	 * @param desc is a short description of the event
+	 * @return an HTTP Response, status 200 (added)
 	 */
-	public void addEvent(Date d, String lieu, String desc);
+	public Response addEvent(Date d, String lieu, String desc);
 	
 	/**
-	 * Remove an event, all users leaves it
+	 * Remove an event and the users/cars which participated
 	 * @param e is the event to remove
+	 * @return an HTTP Response, status 200 (removed) or 202 (not removed --> event already removed)
 	 */
-	public void removeEvent(int idEvent);	
+	public Response removeEvent(int idEvent);	
 	
 	/**
 	 * Create a new user and add him as a PASSENGER to the event if seats are available
@@ -64,7 +66,7 @@ public interface EventService {
 	 * @param nbSeatsCar is the nbSeats of the car
 	 * @return an HTTP Response, status 200 (added) or 202 (not added -> no seats)
 	 */
-	public Response joinEventWithCar (int idEvent, String nameDriver, String modelCar, int nbSeatsCar);
+	public Response joinEventWithCar (int idEvent, String nameDriver, String modelCar, Integer nbSeatsCar);
 	
 	/**
 	 * Delete user from e, and user's car if he's the driver 
