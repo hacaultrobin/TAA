@@ -1,9 +1,11 @@
 'use strict';
 
-var covoitApp = angular.module('covoitApp', ['ui.router', 'ngDialog']);
+var covoitApp = angular.module('covoitApp', ['ui.router', 'ngDialog', 'ngQuickDate', function ($httpProvider) {
+	
+}]);
 
-covoitApp.config(function($stateProvider, $urlRouterProvider) {
-
+covoitApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+	
 	// For any unmatched url, redirect to /events
 	$urlRouterProvider.otherwise("/events");
 

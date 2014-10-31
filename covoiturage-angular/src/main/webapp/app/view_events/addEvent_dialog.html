@@ -1,0 +1,14 @@
+<div id="add-event-dialog">
+	<h1>Ajout d'un évènement</h1>
+	<span>Lieu</span>
+	<input type="text" ng-model="addEvent.place">
+	<span>Date</span>
+	<quick-datepicker ng-model='addEvent.date' date-format='dd/MM/yyyy'
+					  placeholder='Sélectionner' disable-timepicker='true'>
+	</quick-datepicker>
+	<br>
+	<span id="event-desc">Description</span>
+	<textarea ng-model="addEvent.desc"></textarea>
+	<br>
+	<button ng-click="validateAddEvent(addEvent)">Valider</button>
+</div>

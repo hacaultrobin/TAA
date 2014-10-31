@@ -4,10 +4,10 @@ covoitApp.controller('eventCtrl', ['$scope', '$stateParams', '$state', 'daoEvent
                                    function($scope, $stateParams, $state, daoEvents, ngDialog) {
 	
 	/* DEFINITION OF THE CALLBACKS */
-	var getEventUsersCallback = function(data) {
+	$scope.getEventUsersCallback = function(data) {
 		$scope.event.users = data;
 	};
-	var getEventCarsCallback = function(data) {
+	$scope.getEventCarsCallback = function(data) {
 		$scope.event.cars = data;
 	};
 
@@ -19,8 +19,9 @@ covoitApp.controller('eventCtrl', ['$scope', '$stateParams', '$state', 'daoEvent
 				$state.go("events");
 			} else {
 				$scope.event = current_event;
-				daoEvents.getEventUsers($scope.event.id, getEventUsersCallback);
-				daoEvents.getEventCars($scope.event.id, getEventCarsCallback);
+				$scope.setIdSelectedEvent(current_event.id);
+				daoEvents.getEventUsers($scope.event.id, $scope.getEventUsersCallback);
+				daoEvents.getEventCars($scope.event.id, $scope.getEventCarsCallback);
 			}
 		}
 	});
@@ -31,48 +32,26 @@ covoitApp.controller('eventCtrl', ['$scope', '$stateParams', '$state', 'daoEvent
 			return true;
 		} else if ($scope.event.cars != undefined && $scope.event.cars != []) {
 			var userCar = getCar(user.carId, $scope.event.cars);
-			return userCar.nbAvailableSeat == userCar.nbSeat - 1;
+			return userCar == null || userCar.nbAvailableSeat == userCar.nbSeat - 1;
+		}
+		return false;
+	};
+	
+	/* Tells if seats are avalailable to join the event as a passenger */
+	$scope.isSeatsAvailable = function () {
+		if ($scope.event != undefined && $scope.event.cars != undefined) {
+			for (var i = 0; i < $scope.event.cars.length; i++) {				
+				if ($scope.event.cars[i].nbAvailableSeat > 0) return true;
+			}
 		}
 		return false;
 	};
 	
 	$scope.clickDeleteUserButton = function(user) {
 		daoEvents.deleteUserFromEvent($scope.event.id, user.id, function() {
-			daoEvents.getEventUsers($scope.event.id, getEventUsersCallback);
-			daoEvents.getEventCars($scope.event.id, getEventCarsCallback);
+			daoEvents.getEventUsers($scope.event.id, $scope.getEventUsersCallback);
+			daoEvents.getEventCars($scope.event.id, $scope.getEventCarsCallback);
 		});
-	};
-	
-	$scope.clickAddPassengerButton = function () {
-		ngDialog.open({template: 'view_event/addPassenger_dialog.html', scope: $scope});
-	};
-	
-	$scope.clickAddDriverButton = function () {
-		ngDialog.open({template: 'view_event/addDriver_dialog.html', scope: $scope});
-	};
-	
-	$scope.validateAddPassenger = function (name) {
-		if (name == undefined || name == "") {
-			alert("Entrez un nom de passager correct");
-		} else {
-			ngDialog.close();
-			alert("TODO : Ajouter le nouveau passager " + name);
-		}
-	};
-	
-	$scope.validateAddDriver = function (driverForm) {
-		if (driverForm != undefined) {
-			if (driverForm.name == undefined || driverForm.name == "") {
-				alert("Entrez un nom de conducteur correct");
-			} else if (driverForm.carModel == undefined || driverForm.carModel == "") {
-				alert("Entrez un modele de voiture correct");
-			} else if (driverForm.carSeats == undefined || driverForm.carSeats < 1) {
-				alert("Entrez un nombre de sieges correct");
-			} else {
-				ngDialog.close();
-				alert("TODO : Ajouter le nouveau passager " + driverForm.name);
-			}			
-		}
 	};
 
 	/* Retrieve the event with id eventId from a list of events */

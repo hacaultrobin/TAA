@@ -15,8 +15,10 @@
 			</li>
 		</ul>
 		<span>Ajout</span>
-		<button ng-click="clickAddPassengerButton()">Passager</button>
-		<button ng-click="clickAddDriverButton()">Conducteur</button>
+		<div ng-controller="addUserCtrl">
+			<button ng-click="clickAddPassenger()" ng-disabled="!isSeatsAvailable()">Passager</button>
+			<button ng-click="clickAddDriver()" ng-disabled="event == undefined">Conducteur</button>
+		</div>
 	</article>
 	<article id="event-cars">
 		<span>Voitures</span>

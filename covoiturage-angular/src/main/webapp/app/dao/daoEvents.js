@@ -19,12 +19,47 @@ covoitApp.factory('daoEvents',  ['$http', function($http){
 	var deleteUserFromEvent = function(idEvent, idUser, callback) {
 		$http.delete(REST_API_ROOT_URL + '/events/'+idEvent+'/removeuser/'+idUser).success(callback);
 	};
+	
+	var addEvent = function(date, place, desc, callback) {
+		$http.post(REST_API_ROOT_URL + '/events',
+				  encodeURI("date=2014 Oct 31 12:00:00") + "&" + encodeURI("place="+place) + "&" + encodeURI("desc="+desc),
+				  {headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/x-www-form-urlencoded'}}).success(callback);
+	};
+	
+	var addUserAsPassenger = function(idEvent, username, okcallback, noseatscallback) {
+		$http.post(REST_API_ROOT_URL + '/events/'+idEvent+'/join',
+				  encodeURI("username="+username),
+				  {headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/x-www-form-urlencoded'}})
+				  .success(function(data, status) {
+					  if (status == 200) {
+						  return okcallback();
+					  } else if (status == 202) {
+						  return noseatscallback();
+					  }
+				  });
+	};
+	
+	var addUserAsDriver = function(idEvent, username, modelcar, nbseatscar, okcallback, noseatscallback) {
+		$http.post(REST_API_ROOT_URL + '/events/'+idEvent+'/joindriver',
+				  encodeURI("username="+username) + "&" + encodeURI("modelcar="+modelcar) + "&" + encodeURI("nbseatscar="+nbseatscar),
+				  {headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/x-www-form-urlencoded'}})
+				  .success(function(data, status) {
+					  if (status == 200) {
+						  return okcallback();
+					  } else if (status == 202) {
+						  return noseatscallback();
+					  }
+				  });
+	};
 
 	return {
 		"getAllEvents": getAllEvents,
 		"getEventUsers": getEventUsers,
 		"getEventCars": getEventCars,
-		"deleteUserFromEvent": deleteUserFromEvent
+		"deleteUserFromEvent": deleteUserFromEvent,
+		"addEvent": addEvent,
+		"addUserAsPassenger": addUserAsPassenger,
+		"addUserAsDriver": addUserAsDriver
 	};
 
 }]);

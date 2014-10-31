@@ -8,13 +8,16 @@ section#left {
 }
 
 #list-events {
-	position: absolute;
-	top: 0px;
-	bottom: 0px;
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
 	overflow-y: auto;
+	max-height: calc(100% - 30px);
+}
+
+section#left>button {
+	margin-left: 6px;
+	margin-top: 4px;
 }
 
 .event-elem {
@@ -31,12 +34,46 @@ section#left {
 	cursor: pointer;
 }
 
-.event-elem > span:first-child {
+.event-elem.selected {
+	background: #DDD;
+}
+
+.event-elem>span:first-child {
 	font-weight: bold;
 }
 
-.event-elem > span:last-child  {
+.event-elem>span:last-child {
 	display: block;
 	margin-left: 8px;
 	font-size: 14px;
+}
+
+#add-event-dialog h1 {
+	font-size: 18px;
+	text-align: center;
+	margin: 0px 0px 4px 0px;
+}
+
+#add-event-dialog span {
+	font-size: 13px;
+	margin-right: 2px;
+}
+
+#add-event-dialog textarea {
+	margin-top: 5px;
+	height: 50px;
+	width: 250px;
+}
+
+#add-event-dialog #event-desc {
+	line-height: 50px;
+	height: 50px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 5px;
+}
+
+#add-event-dialog .quickdate {
+	line-height: 14px;
+	vertical-align: middle;
 }
