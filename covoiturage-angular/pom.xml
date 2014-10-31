@@ -8,29 +8,9 @@
 	<artifactId>covoiturage-angular</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>GWT Maven Archetype</name>
-
-	<properties>
-		<!-- Convenience property to set the GWT version -->
-		<gwtVersion>2.5.1</gwtVersion>
-		<!-- GWT needs at least java 1.5 -->
-		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<name>Covoiturage Angular</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
-			<version>${gwtVersion}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>${gwtVersion}</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -97,28 +77,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- GWT Maven Plugin -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.5.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<!-- <goal>test</goal> <goal>i18n</goal> <goal>generateAsync</goal> -->
-						</goals>
-					</execution>
-				</executions>
-				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
-					documentation at codehaus.org -->
-				<configuration>
-					<runTarget>covoiturage.html</runTarget>
-					<hostedWebapp>${webappDirectory}</hostedWebapp>
-					<i18nMessagesBundle>fr.istic.m2gl.covoiturage.client.Messages</i18nMessagesBundle>
-				</configuration>
-			</plugin>
-
 			<!-- Copy static web files before executing gwt:run -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -136,6 +94,7 @@
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -145,7 +104,9 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			
 		</plugins>
+		
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
@@ -170,23 +131,6 @@
 										</versionRange>
 										<goals>
 											<goal>exploded</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
-										<artifactId>
-											gwt-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.5.1,)
-										</versionRange>
-										<goals>
-											<goal>i18n</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
