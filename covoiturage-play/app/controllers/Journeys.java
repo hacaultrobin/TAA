@@ -1,21 +1,15 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import play.Routes;
-import play.data.Form;
 import play.data.validation.Constraints;
-import play.libs.Akka;
-import play.libs.EventSource;
 import play.libs.F;
-import play.libs.ws.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.Security;
-import rx.Subscription;
 import scala.NotImplementedError;
 import services.JourneysService;
-import services.JourneysServiceStub;
+import services.JourneysServiceHTTP;
 import services.models.Journey;
 
 import java.util.function.Function;
@@ -23,20 +17,20 @@ import java.util.function.Function;
 /**
  * Controller grouping actions related to the journeys service.
  */
-@Security.Authenticated
+@Security.Authenticated(Authenticator.class)
 public class Journeys extends Controller {
 
     /**
      * The entry point to the service implementation.
      */
-    static JourneysService service = new JourneysServiceStub(Akka.system());
+    //static JourneysService service = new JourneysServiceStub(Akka.system());
+    static JourneysService service = new JourneysServiceHTTP(play.libs.ws.WS.client());
 
     /**
      * Show all visible journeys
      */
     public static F.Promise<Result> journeys() {
-        return service.allJourneys().
-                map(journeys -> ok(views.html.index.render(Authentication.username(), journeys)));
+        return service.allJourneys().map(journeys -> ok(views.html.index.render(Authentication.username(), journeys)));
     }
 
     /**

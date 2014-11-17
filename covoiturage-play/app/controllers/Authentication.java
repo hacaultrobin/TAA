@@ -5,13 +5,10 @@ import play.data.validation.Constraints.Required;
 import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Result;
-import scala.NotImplementedError;
 import views.html.login;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 import static play.data.Form.form;
 

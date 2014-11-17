@@ -5,7 +5,7 @@
 
     <ul>
         @for(journey <- journeys) {
-            <li><a href="@routes.Journeys.journey(journey.id)">@journey.name</a> (<a href="@routes.Journeys.observe(journey.id)">observe</a>)</li>
+            <li><a href="@routes.Journeys.journey(journey.id)">@journey.date @journey.place - @journey.description</a></li>
         }
     </ul>
 }
