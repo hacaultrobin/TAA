@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr" ng-app="covoitApp">
+
+<head>
+
+	<!-- Angular and plugins -->
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<script src="bower_components/ngDialog/js/ngDialog.js"></script>
+	<script src="bower_components/ngQuickDate/dist/ng-quick-date.min.js"></script>
+	
+	<!-- Module declaration and routes -->
+	<script src="app.js"></script>
+	
+	<!-- Services -->
+	<script src="dao/daoEvents.js"></script>
+	
+	<!-- Controllers -->
+	<script src="controller/ViewEventsController.js"></script>
+	<script src="controller/ViewEventController.js"></script>
+	<script src="controller/AddEventController.js"></script>
+	<script src="controller/AddUserController.js"></script>
+	
+	<!-- Stylesheets -->
+	<link rel=stylesheet type="text/css" href="app.css">
+	<link rel=stylesheet type="text/css" href="view/events.css">
+	<link rel=stylesheet type="text/css" href="view/event.css">
+	<link rel=stylesheet type="text/css" href="bower_components/ngDialog/css/ngDialog.css">
+	<link rel=stylesheet type="text/css" href="bower_components/ngDialog/css/ngDialog-theme-default.css">
+	<link rel=stylesheet type="text/css" href="bower_components/ngQuickDate/dist/ng-quick-date.css">
+	<link rel=stylesheet type="text/css" href="bower_components/ngQuickDate/dist/ng-quick-date-plus-default-theme.css">
+	
+	<title>Covoiturage</title>
+</head>
+
+<body ng-controller="eventsCtrl" ui-view></body>
+
+</html>

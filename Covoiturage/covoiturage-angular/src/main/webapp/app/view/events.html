@@ -1,0 +1,17 @@
+<!-- HTML template for the Events
+     Contains the list of events, and a reference to the event detail template -->
+
+<section id="left">
+	
+	<ul id="list-events">
+		<li class="event-elem" ng-repeat="event in events" ui-sref="events.item({eventId: event.id})" ng-class="{selected: idSelectedEvent == event.id}">
+			<span>{{event.place}}</span>
+			<span> - {{event.date.toLocaleDateString()}}</span>
+			<span>{{event.description}}</span>
+		</li>
+	</ul>
+	<button ng-dialog="view/addEvent_dialog.html" ng-dialog-controller="addEventCtrl">Ajouter</button>
+	
+</section>
+
+<section id="right" ui-view></section> <!-- Event detail -->

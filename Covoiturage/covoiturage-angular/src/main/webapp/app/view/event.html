@@ -1,0 +1,29 @@
+<!-- Event detail HTML template -->
+
+<section ng-controller="eventCtrl" ng-show="event != undefined">
+	<h1>Evènement {{event.place}}</h1>
+	<article id="event-users">
+		<span>Participants</span>
+		<ul>
+			<li ng-repeat="user in event.users">
+				<span>{{user.name}} ({{user.id}})</span>
+				<img ng-show="isDeleteUserAvailable(user)" ng-click="clickDeleteUserButton(user)" src="img/delete.png" title="Supprimer {{user.name}} de l'évènement"/>
+				<span>Voiture {{user.carId}}</span>
+			</li>
+		</ul>
+		<span>Ajout</span>
+		<div ng-controller="addUserCtrl">
+			<button ng-click="clickAddPassenger()" ng-disabled="!isSeatsAvailable()">Passager</button>
+			<button ng-click="clickAddDriver()" ng-disabled="event == undefined">Conducteur</button>
+		</div>
+	</article>
+	<article id="event-cars">
+		<span>Voitures</span>
+		<ul>
+			<li ng-repeat="car in event.cars">
+				<span>Voiture {{car.id}} ({{car.model}}, {{car.nbSeat}} sièges)</span>
+				<span>Places disponibles : {{car.nbAvailableSeat}}</span>
+			</li>
+		</ul>
+	</article>
+</section>
