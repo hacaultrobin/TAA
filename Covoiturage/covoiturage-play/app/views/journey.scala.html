@@ -1,8 +1,30 @@
-@(journey: services.models.Journey, joinForm: Form[Journeys.Join], attendForm: Form[Journeys.Attend])
+@(event: services.models.Event, users: java.util.List[services.models.User], cars: java.util.List[services.models.Car])
 
 @layout {
-
-    <h1>Attend to “@journey.place”</h1>
-
-
+	<section>
+		<h1>Evènement @event.place</h1>
+		<article id="event-users">
+			<span>Participants</span>
+			<ul>
+		        @for(user <- users) {
+					<li>
+						<span>@user.name (@user.id)</span>
+						<!-- <img src="img/delete.png" title="Supprimer @user.name de l'évènement"/> -->
+						<span>Voiture @user.carId</span>
+					</li>
+		        }
+			</ul>
+		</article>
+		<article id="event-cars">
+			<span>Voitures</span>
+			<ul>
+				@for(car <- cars) {
+					<li>
+						<span>Voiture @car.id (@car.model, @car.nbSeat sièges)</span>
+						<span>Places disponibles : @car.nbAvailableSeat</span>
+					</li>
+				}
+			</ul>
+		</article>
+	</section>
 }

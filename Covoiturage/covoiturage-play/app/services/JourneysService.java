@@ -3,7 +3,9 @@ package services;
 import play.libs.F;
 import rx.Observable;
 import services.models.Attendee;
-import services.models.Journey;
+import services.models.Car;
+import services.models.Event;
+import services.models.User;
 
 import java.util.List;
 
@@ -15,8 +17,11 @@ public interface JourneysService {
     /**
      * @return A list of all the journeys handled by the service
      */
-    F.Promise<List<Journey>> allJourneys();
-
+    F.Promise<List<Event>> allEvents();
+    F.Promise<Event> getEvent(Long id);
+    F.Promise<List<User>> allUsers(Long id);
+    F.Promise<List<Car>> allCars(Long id);
+    
     /**
      * Registers a new attendee joining a driver already attending to a journey.
      *

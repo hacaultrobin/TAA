@@ -1,11 +1,11 @@
-@(username: String, journeys: java.util.List[services.models.Journey])
+@(username: String, events: java.util.List[services.models.Event])
 
 @layout {
     <h1>Hello @username</h1>
 
     <ul>
-        @for(journey <- journeys) {
-            <li><a href="@routes.Journeys.journey(journey.id)">@journey.date @journey.place - @journey.description</a></li>
+        @for(event <- events) {
+            <li><a href="@routes.Journeys.journey(event.id)">@event.date @event.place - @event.description</a></li>
         }
     </ul>
 }
