@@ -1,7 +1,8 @@
-package client;
+package client.controller;
 
 import java.rmi.RemoteException;
 
+import client.User;
 import server.ChatRoom;
 
 

@@ -9,43 +9,46 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
 import server.ChatRoom;
+import client.controller.CommandePost;
+import client.controller.Commande;
+import client.controller.CommandeUnregister;
+import client.model.SampleLoginModule;
 
 import com.sun.security.auth.callback.DialogCallbackHandler;
 
 
-public class ChatUserImpl extends UnicastRemoteObject implements ChatUser,
-		Runnable, User {
+public class ChatUserImpl extends UnicastRemoteObject implements ChatUser, Runnable, User {
+
+	private static final long serialVersionUID = 1L;
+	
+	/* Binding with Spring dependancy (client-beans.xml) */
 	private ChatRoom room = null;
+	private ChatUI ui;
 
 	private String pseudo = null;
 
-	private String name = null;
-
-	private ChatUI ui;
-
-	public ChatUserImpl(String name) throws RemoteException {
+	public ChatUserImpl() throws RemoteException {
 		super(); // Appel au constructeur de UnicastRemoteObject
-		this.name = name;
-		try {
-			this.room = (ChatRoom) Naming.lookup("rmi://localhost/ChatRoom");
-		} catch (Exception e) {
 
-			e.printStackTrace();
-			System.exit(0);
-		}
-
-		this.createIHM();
-		// this.requestPseudo();
+//		try {
+//			this.room = (ChatRoom) Naming.lookup("rmi://localhost/ChatRoom");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.exit(0);
+//		}
+//
+//		this.createIHM();
+//		this.requestPseudo();
 	}
 
-	public void createIHM() {
-		Commande unreg = new CommandeUnregister(room);
-		unreg.setUser(this);
-		Commande post = new CommandPost(room);
-		post.setUser(this);
-		ui = new ChatUI(this, post, unreg);
-		((CommandPost) post).setUI(ui);
-	}
+//	public void createIHM() {
+//		Commande unreg = new CommandeUnregister(room);
+//		unreg.setUser(this);
+//		Commande post = new CommandePost(room);
+//		post.setUser(this);
+//		ui = new ChatUI(this, post, unreg);
+//		((CommandePost) post).setUI(ui);
+//	}
 
 	public void displayMessage(String message) throws RemoteException {
 		ui.displayMessage(message);
@@ -62,8 +65,7 @@ public class ChatUserImpl extends UnicastRemoteObject implements ChatUser,
 				//Subject mySubject = new Subject(false, principals,
 				//		new HashSet(), new HashSet());
 
-				lc.initialize(new Subject(), new DialogCallbackHandler(), null,
-						new HashMap());
+				lc.initialize(new Subject(), new DialogCallbackHandler(), null, new HashMap());
 
 			} catch (SecurityException se) {
 				System.err.println("Cannot create LoginContext. "
@@ -98,7 +100,7 @@ public class ChatUserImpl extends UnicastRemoteObject implements ChatUser,
 			// did they fail three times?
 			if (i == 3) {
 				System.out.println("Sorry");
-				
+
 				System.exit(-1);
 			}
 
@@ -113,6 +115,14 @@ public class ChatUserImpl extends UnicastRemoteObject implements ChatUser,
 
 	public String getPseudo() {
 		return pseudo;
+	}
+
+	public ChatUI getUi() {
+		return ui;
+	}
+
+	public void setUi(ChatUI ui) {
+		this.ui = ui;
 	}
 
 }

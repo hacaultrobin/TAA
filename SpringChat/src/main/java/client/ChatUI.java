@@ -17,28 +17,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import client.controller.Commande;
+
 public class ChatUI {
 
 	private Commande  unregister;
 	private Commande  postMessage;
 	
-	
-	private ChatUser u = null;
-	
 	private String title = "Logiciel de discussion en ligne";
-
 	private JFrame window = new JFrame(this.title);
-
 	private JTextArea txtOutput = new JTextArea();
-
 	private JTextField txtMessage = new JTextField();
-
 	private JButton btnSend = new JButton("Envoyer");
+	
+	private String message = null;
 
-	public ChatUI(ChatUser u,Commande post, Commande unregister) {
-
+	public ChatUI(Commande post, Commande unregister) {
 		this.postMessage = post;
 		this.unregister = unregister;
+		
 		JPanel panel = (JPanel) this.window.getContentPane();
 		JScrollPane sclPane = new JScrollPane(txtOutput);
 		panel.add(sclPane, BorderLayout.CENTER);
@@ -82,7 +79,6 @@ public class ChatUI {
 		 System.exit(-1);
 	}
 
-	protected String message = null;
 	public void btnSend_actionPerformed(ActionEvent e) {
 		try {
 			message = this.txtMessage.getText();
@@ -111,7 +107,5 @@ public class ChatUI {
 	public String getMessage() {
 		return message;
 	}
-
-    
 
 }

@@ -38,7 +38,7 @@
  * maintenance of any nuclear facility. 
  */
 
-package client;
+package client.model;
 
 import java.security.Principal;
 

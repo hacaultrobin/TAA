@@ -38,7 +38,7 @@
  * maintenance of any nuclear facility. 
  */
 
-package client;
+package client.model;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -132,10 +132,7 @@ public class SampleLoginModule implements LoginModule {
 	 *            options specified in the login <code>Configuration</code>
 	 *            for this particular <code>LoginModule</code>.
 	 */
-	public void initialize(Subject subject, CallbackHandler callbackHandler,
-			Map sharedState, Map options) {
-
-		
+	public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
 		this.sharedState = sharedState;
@@ -162,7 +159,6 @@ public class SampleLoginModule implements LoginModule {
 	 *                the authentication.
 	 */
 	public boolean login() throws LoginException {
-
 		// prompt for a user name and password
 		if (callbackHandler == null)
 			throw new LoginException("Error: no CallbackHandler available "

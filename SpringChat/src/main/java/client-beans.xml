@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<bean id="chatUserImpl" class="client.ChatUserImpl">
+		<property name="ui" ref="chatUI" />
+	</bean>
+	
+	<bean id="chatUI" class="client.ChatUI">
+		<constructor-arg ref="cmdPost" />
+		<constructor-arg ref="cmdUnreg" />
+	</bean>
+	
+	<bean id="cmdPost" class="client.controller.CommandePost">
+		<constructor-arg ref="room" />
+		<property name="user" ref="chatUserImpl" />
+<!-- 		<property name="ui" ref="chatUI" /> -->
+	</bean>
+	
+	<bean id="cmdUnreg" class="client.controller.CommandeUnregister">
+		<constructor-arg ref="room" />
+		<property name="user" ref="chatUserImpl" />
+	</bean>
+	
+	<bean id="room" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+    	<property name="serviceUrl" value="rmi://localhost/ChatRoom"/>
+	    <property name="serviceInterface" value="server.ChatRoom"/>
+	</bean>
+
+	<!--<aop:aspectj-autoproxy/> <bean class="aspect.LogAspect"/> -->
+</beans>

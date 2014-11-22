@@ -12,6 +12,9 @@ import client.ChatUser;
 
 
 public class ChatRoomImpl extends UnicastRemoteObject implements ChatRoom {
+
+	private static final long serialVersionUID = 1L;
+
 	private Hashtable<String, ChatUser> users = new Hashtable<String, ChatUser>();
 
 	private Hashtable<String, char[]> alloweduser = new Hashtable<String, char[]>();
@@ -55,14 +58,14 @@ public class ChatRoomImpl extends UnicastRemoteObject implements ChatRoom {
 			throws FailedLoginException, RemoteException {
 		// verify the username/password
 		boolean usernameCorrect = false;
-		boolean passwordCorrect = false;
+		//boolean passwordCorrect = false;
 		if (this.alloweduser.containsKey(username)) {
 			usernameCorrect = true;
 			if (password.length == this.alloweduser.get(username).length
 					&& testPassword(this.alloweduser.get(username), password)) {
 
 				// authentication succeeded!!!
-				passwordCorrect = true;
+				//passwordCorrect = true;
 				if (debug)
 					System.out.println("\t\t[SampleLoginModule] "
 							+ "authentication succeeded");

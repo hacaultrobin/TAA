@@ -1,13 +1,15 @@
-package client;
+package client.controller;
 
 import java.rmi.RemoteException;
 
+import client.ChatUI;
+import client.User;
 import server.ChatRoom;
 
 
-public class CommandPost implements Commande {
+public class CommandePost implements Commande {
 
-	public CommandPost(ChatRoom room) {
+	public CommandePost(ChatRoom room) {
 		this.room = room;
 	}
 
