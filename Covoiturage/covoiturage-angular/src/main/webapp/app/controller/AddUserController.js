@@ -3,11 +3,11 @@
 covoitApp.controller('addUserCtrl', ['$scope', 'ngDialog', 'daoEvents', '$rootScope', function($scope, ngDialog, daoEvents, $rootScope) {
 
 	$scope.clickAddPassenger = function () {
-		ngDialog.open({template: "view_event/addPassenger_dialog.html", scope: $scope});
+		ngDialog.open({template: "view/addPassenger_dialog.html", scope: $scope});
 	};
 
 	$scope.clickAddDriver = function () {
-		ngDialog.open({template: "view_event/addDriver_dialog.html", scope: $scope});
+		ngDialog.open({template: "view/addDriver_dialog.html", scope: $scope});
 	};
 
 	var addUserOkCallback = function () {
