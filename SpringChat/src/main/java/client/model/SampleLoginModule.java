@@ -53,7 +53,7 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import server.ChatRoom;
+import server.IChatRoom;
 
 
 /**
@@ -103,9 +103,9 @@ public class SampleLoginModule implements LoginModule {
 	// testUser's SamplePrincipal
 	private SamplePrincipal userPrincipal;
 
-	private ChatRoom room;
+	private IChatRoom room;
 
-	public SampleLoginModule(ChatRoom room) {
+	public SampleLoginModule(IChatRoom room) {
 		this.room = room;
 	}
 
@@ -201,6 +201,7 @@ public class SampleLoginModule implements LoginModule {
 		}
 
 		try {
+			System.err.println(room);
 			return room.authentification(username, password);
 		} catch (RemoteException e) {
 			e.printStackTrace();

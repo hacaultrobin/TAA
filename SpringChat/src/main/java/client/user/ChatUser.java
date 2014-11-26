@@ -1,6 +1,5 @@
-package client;
+package client.user;
 
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -8,50 +7,33 @@ import java.util.HashMap;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
-import server.ChatRoom;
-import client.controller.CommandePost;
-import client.controller.Commande;
-import client.controller.CommandeUnregister;
+import server.IChatRoom;
+import client.command.ICommand;
 import client.model.SampleLoginModule;
 
 import com.sun.security.auth.callback.DialogCallbackHandler;
 
-
-public class ChatUserImpl extends UnicastRemoteObject implements ChatUser, Runnable, User {
+public class ChatUser extends UnicastRemoteObject implements IChatUser, Runnable, IUser {
 
 	private static final long serialVersionUID = 1L;
 	
-	/* Binding with Spring dependancy (client-beans.xml) */
-	private ChatRoom room = null;
-	private ChatUI ui;
+	private IChatRoom room = null;	
+	
+	private ICommand getPseudoCmd;
+	private ICommand displayMsgCmd;
+	private String displayMsg;
 
 	private String pseudo = null;
 
-	public ChatUserImpl() throws RemoteException {
+	public ChatUser() throws RemoteException {
 		super(); // Appel au constructeur de UnicastRemoteObject
-
-//		try {
-//			this.room = (ChatRoom) Naming.lookup("rmi://localhost/ChatRoom");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.exit(0);
-//		}
-//
-//		this.createIHM();
-//		this.requestPseudo();
 	}
 
-//	public void createIHM() {
-//		Commande unreg = new CommandeUnregister(room);
-//		unreg.setUser(this);
-//		Commande post = new CommandePost(room);
-//		post.setUser(this);
-//		ui = new ChatUI(this, post, unreg);
-//		((CommandePost) post).setUI(ui);
-//	}
-
 	public void displayMessage(String message) throws RemoteException {
-		ui.displayMessage(message);
+		if (displayMsgCmd != null) {
+			displayMsg = message;
+			displayMsgCmd.execute();
+		}
 	}
 
 	public void run() {
@@ -105,24 +87,42 @@ public class ChatUserImpl extends UnicastRemoteObject implements ChatUser, Runna
 			}
 
 			System.out.println("Authentication succeeded!");
-			this.pseudo = ui.requestPseudo();
+			if (getPseudoCmd != null) {
+				getPseudoCmd.execute();
+			}
 			this.room.subscribe(this, this.pseudo);
 
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/* ------ Setters commandes ------ */
+	
+	public void setGetPseudoCmd(ICommand getPseudoCmd) {
+		this.getPseudoCmd = getPseudoCmd;
+	}
+	
+	public void setDisplayMsgCmd(ICommand displayMsgCmd) {
+		this.displayMsgCmd = displayMsgCmd;
+	}
+	
+	/* ------ Getters et Setters ------ */
+	
+	public String getDisplayMsg() {
+		return displayMsg;
+	}
+	
 	public String getPseudo() {
 		return pseudo;
 	}
-
-	public ChatUI getUi() {
-		return ui;
+	
+	public void setPseudo(String pseudo) {
+		this.pseudo = pseudo;
 	}
 
-	public void setUi(ChatUI ui) {
-		this.ui = ui;
+	public void setRoom(IChatRoom room) {
+		this.room = room;
 	}
 
 }

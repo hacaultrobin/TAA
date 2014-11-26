@@ -1,9 +1,8 @@
-package client;
+package client.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -17,12 +16,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import client.controller.Commande;
+import client.command.ICommand;
 
-public class ChatUI {
+public class ChatUI implements IChatUI {
 
-	private Commande  unregister;
-	private Commande  postMessage;
+	private ICommand unregister;
+	private ICommand postMessage;
 	
 	private String title = "Logiciel de discussion en ligne";
 	private JFrame window = new JFrame(this.title);
@@ -30,12 +29,7 @@ public class ChatUI {
 	private JTextField txtMessage = new JTextField();
 	private JButton btnSend = new JButton("Envoyer");
 	
-	private String message = null;
-
-	public ChatUI(Commande post, Commande unregister) {
-		this.postMessage = post;
-		this.unregister = unregister;
-		
+	public ChatUI() {
 		JPanel panel = (JPanel) this.window.getContentPane();
 		JScrollPane sclPane = new JScrollPane(txtOutput);
 		panel.add(sclPane, BorderLayout.CENTER);
@@ -50,11 +44,7 @@ public class ChatUI {
 				window_windowClosing(e);
 			}
 		});
-		btnSend.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnSend_actionPerformed(e);
-			}
-		});
+		btnSend.addActionListener(e -> btnSend_actionPerformed(e));
 		txtMessage.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent event) {
 				if (event.getKeyChar() == '\n')
@@ -70,42 +60,72 @@ public class ChatUI {
 		this.txtMessage.requestFocus();
 	}
 
+	/* (non-Javadoc)
+	 * @see client.ui.IChatUI#window_windowClosing(java.awt.event.WindowEvent)
+	 */
+	@Override
 	public void window_windowClosing(WindowEvent e) {
-		try {
-			unregister.execute();
-		} catch (Exception exc) {
-			System.err.println("Desinscription impossible");
+		if (unregister != null) {
+			unregister.execute();			
 		}
-		 System.exit(-1);
+		System.exit(-1);
 	}
 
+	/* (non-Javadoc)
+	 * @see client.ui.IChatUI#btnSend_actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
 	public void btnSend_actionPerformed(ActionEvent e) {
-		try {
-			message = this.txtMessage.getText();
+		if (postMessage != null) {
 			postMessage.execute();
-		} catch (Exception exception) {
-			System.err.println("Envoie message impossible");
-		}
-		this.txtMessage.setText("");
-		this.txtMessage.requestFocus();
+			this.txtMessage.setText("");
+			this.txtMessage.requestFocus();
+		}		
 	}
 	
-    public void displayMessage(String message){
+    /* (non-Javadoc)
+	 * @see client.ui.IChatUI#displayMessage(java.lang.String)
+	 */
+    @Override
+	public void displayMessage(String message){
         this.txtOutput.append(message + "\n");
         this.txtOutput.moveCaretPosition(this.txtOutput.getText().length());
     }
 
-    public String requestPseudo() {
+    /* (non-Javadoc)
+	 * @see client.ui.IChatUI#requestPseudo()
+	 */
+    @Override
+	public String requestPseudo() {
          String pseudo = JOptionPane.showInputDialog(
                 this.window, "Entrez votre pseudo : ",
                 this.title,  JOptionPane.OK_OPTION
-        );
-        if (pseudo == null) System.exit(0);
+        );        
         return pseudo;
     }
 
+	/* (non-Javadoc)
+	 * @see client.ui.IChatUI#getMessage()
+	 */
+	@Override
 	public String getMessage() {
-		return message;
+		return this.txtMessage.getText();
+	}
+	
+	/* (non-Javadoc)
+	 * @see client.ui.IChatUI#setUnregisterCmd(client.command.ICommand)
+	 */
+	@Override
+	public void setUnregisterCmd(ICommand unregister) {
+		this.unregister = unregister;
+	}
+	
+	/* (non-Javadoc)
+	 * @see client.ui.IChatUI#setPostMessageCmd(client.command.ICommand)
+	 */
+	@Override
+	public void setPostMessageCmd(ICommand postMessage) {
+		this.postMessage = postMessage;
 	}
 
 }
