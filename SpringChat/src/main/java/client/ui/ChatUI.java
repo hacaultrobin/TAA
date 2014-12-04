@@ -60,9 +60,6 @@ public class ChatUI implements IChatUI {
 		this.txtMessage.requestFocus();
 	}
 
-	/* (non-Javadoc)
-	 * @see client.ui.IChatUI#window_windowClosing(java.awt.event.WindowEvent)
-	 */
 	@Override
 	public void window_windowClosing(WindowEvent e) {
 		if (unregister != null) {
@@ -71,9 +68,6 @@ public class ChatUI implements IChatUI {
 		System.exit(-1);
 	}
 
-	/* (non-Javadoc)
-	 * @see client.ui.IChatUI#btnSend_actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void btnSend_actionPerformed(ActionEvent e) {
 		if (postMessage != null) {
@@ -83,18 +77,12 @@ public class ChatUI implements IChatUI {
 		}		
 	}
 	
-    /* (non-Javadoc)
-	 * @see client.ui.IChatUI#displayMessage(java.lang.String)
-	 */
     @Override
 	public void displayMessage(String message){
         this.txtOutput.append(message + "\n");
         this.txtOutput.moveCaretPosition(this.txtOutput.getText().length());
     }
 
-    /* (non-Javadoc)
-	 * @see client.ui.IChatUI#requestPseudo()
-	 */
     @Override
 	public String requestPseudo() {
          String pseudo = JOptionPane.showInputDialog(
@@ -104,25 +92,16 @@ public class ChatUI implements IChatUI {
         return pseudo;
     }
 
-	/* (non-Javadoc)
-	 * @see client.ui.IChatUI#getMessage()
-	 */
 	@Override
 	public String getMessage() {
 		return this.txtMessage.getText();
 	}
-	
-	/* (non-Javadoc)
-	 * @see client.ui.IChatUI#setUnregisterCmd(client.command.ICommand)
-	 */
+
 	@Override
 	public void setUnregisterCmd(ICommand unregister) {
 		this.unregister = unregister;
 	}
 	
-	/* (non-Javadoc)
-	 * @see client.ui.IChatUI#setPostMessageCmd(client.command.ICommand)
-	 */
 	@Override
 	public void setPostMessageCmd(ICommand postMessage) {
 		this.postMessage = postMessage;

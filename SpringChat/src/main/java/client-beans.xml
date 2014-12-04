@@ -18,6 +18,7 @@
 		<property name="room" ref="room"/>
 	</bean>	
 
-	<!--<aop:aspectj-autoproxy/> <bean class="aspect.LogAspect"/> -->
+	<aop:aspectj-autoproxy/><bean class="aspects.LogAspect"/>
+	<aop:aspectj-autoproxy/><bean class="aspects.AuthAspect"/>
 	
 </beans>

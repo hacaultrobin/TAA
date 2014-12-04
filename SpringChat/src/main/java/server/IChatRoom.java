@@ -14,6 +14,8 @@ public interface IChatRoom extends Remote {
 
     public void postMessage(String pseudo, String message) throws RemoteException;
     public boolean authentification(String username, char[] password) throws FailedLoginException, RemoteException;
+    
+    public void logOnServer(String msg) throws RemoteException;
       
     
 }

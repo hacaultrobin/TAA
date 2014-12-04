@@ -2,9 +2,9 @@ package client.controller;
 
 import java.rmi.RemoteException;
 
+import server.IChatRoom;
 import client.ui.IChatUI;
 import client.user.IUser;
-import server.IChatRoom;
 
 public class ChatController implements IChatController {
 
@@ -14,9 +14,6 @@ public class ChatController implements IChatController {
 	
 	/* ------ Init du controller (creation des commandes) ------ */
 	
-	/* (non-Javadoc)
-	 * @see client.controller.IChatController#initController()
-	 */
 	@Override
 	public void initController() {
 		ui.setPostMessageCmd(() -> handleSendMessageCmd());
@@ -27,25 +24,21 @@ public class ChatController implements IChatController {
 
 	/* ------ Traitement de l'execution des commandes venant de l'UI ------ */
 	
-	private void handleSendMessageCmd() {
+	public void handleSendMessageCmd(){
 		try {
 			room.postMessage(user.getPseudo(), ui.getMessage());
-		} catch (RemoteException e) {
-			System.err.println("Envoi du message impossible");
-		}
+		} catch (RemoteException e) {}
 	}
 
-	private void handleUnRegisterCmd() {
+	private void handleUnRegisterCmd(){
 		try {
 			room.unsubscribe(user.getPseudo());
-		} catch (RemoteException e) {
-			System.err.println("Desinscription impossible");
-		}
+		} catch (RemoteException e) {}
 	}
 	
 	/* ------ Traitement de l'execution des commandes venant de l'User ------ */
 	
-	private void handleRequestPseudoCmd() {
+	private void handleRequestPseudoCmd(){
 		String pseudo = ui.requestPseudo();
 		if (pseudo == null) {
 			System.exit(0);
@@ -60,25 +53,16 @@ public class ChatController implements IChatController {
 
 	/* ------ Setters ------ */
 	
-	/* (non-Javadoc)
-	 * @see client.controller.IChatController#setUi(client.ui.ChatUI)
-	 */
 	@Override
 	public void setUi(IChatUI ui) {
 		this.ui = ui;
 	}
 
-	/* (non-Javadoc)
-	 * @see client.controller.IChatController#setUser(client.user.User)
-	 */
 	@Override
 	public void setUser(IUser user) {
 		this.user = user;
 	}
 
-	/* (non-Javadoc)
-	 * @see client.controller.IChatController#setRoom(server.ChatRoom)
-	 */
 	@Override
 	public void setRoom(IChatRoom room) {
 		this.room = room;

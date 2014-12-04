@@ -1,5 +1,6 @@
 package server;
 
+import java.io.PrintStream;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -18,6 +19,8 @@ public class ChatRoom extends UnicastRemoteObject implements IChatRoom {
 	private Hashtable<String, IChatUser> users = new Hashtable<String, IChatUser>();
 
 	private Hashtable<String, char[]> alloweduser = new Hashtable<String, char[]>();
+	
+	private static PrintStream serverPrintStream;
 
 	// configurable option
 	private boolean debug = false;
@@ -33,58 +36,51 @@ public class ChatRoom extends UnicastRemoteObject implements IChatRoom {
 	public void subscribe(IChatUser user, String pseudo) throws RemoteException {
 		String message = "Connexion de " + pseudo;
 		this.postMessage("ChatRoom", message);
-		System.out.println(message);
 		this.users.put(pseudo, user);
 	}
 
 	public void unsubscribe(String pseudo) throws RemoteException {
 		String message = "Deconnexion de " + pseudo;
-		System.out.println(message);
 		this.users.remove(pseudo);
 		this.postMessage("ChatRoom", message);
 	}
 
-	public void postMessage(String pseudo, String message)
-			throws RemoteException {
+	public void postMessage(String pseudo, String message) throws RemoteException {
 		String fullMessage = pseudo + " >> " + message;
-		System.out.println(fullMessage);
-
 		for (IChatUser user : users.values()) {
 			user.displayMessage(fullMessage);
 		}
 	}
 
-	public boolean authentification(String username, char[] password)
-			throws FailedLoginException, RemoteException {
+	public boolean authentification(String username, char[] password) throws FailedLoginException, RemoteException {
 		// verify the username/password
 		boolean usernameCorrect = false;
 		//boolean passwordCorrect = false;
 		if (this.alloweduser.containsKey(username)) {
 			usernameCorrect = true;
-			if (password.length == this.alloweduser.get(username).length
-					&& testPassword(this.alloweduser.get(username), password)) {
-
+			if (password.length == this.alloweduser.get(username).length && testPassword(this.alloweduser.get(username), password)) {
 				// authentication succeeded!!!
 				//passwordCorrect = true;
-				if (debug)
+				if (debug) {
 					System.out.println("\t\t[SampleLoginModule] "
 							+ "authentication succeeded");
+				}					
 				return true;
 			}
 
 		}
-
 		// authentication failed -- clean out state
-		if (debug)
+		if (debug) {
 			System.out.println("\t\t[SampleLoginModule] "
 					+ "authentication failed");
-		for (int i = 0; i < password.length; i++)
+		}			
+		for (int i = 0; i < password.length; i++) {
 			password[i] = ' ';
+		}
 		if (!usernameCorrect) {
 			throw new FailedLoginException("User Name Incorrect");
 		} else {
 			throw new FailedLoginException("Password Incorrect");
-
 		}
 	}
 
@@ -98,9 +94,13 @@ public class ChatRoom extends UnicastRemoteObject implements IChatRoom {
 		}
 		return result;
 	}
+	
+	public void logOnServer(String msg) throws RemoteException {
+		serverPrintStream.println(msg);
+	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("codebase = "+System.getProperty("java.rmi.server.codebase"));
+		serverPrintStream = System.err;
 		try {
 			LocateRegistry.createRegistry(1099);
 		} catch (Exception e) {
