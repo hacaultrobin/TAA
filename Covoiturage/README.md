@@ -13,5 +13,8 @@ Dans ce dépôt se trouvent les projets de covoiturage des enseignements TAA et 
     - Projet Angular.js de réalisation d'un client de l'application de covoiturage
 
 ## Lancement de l'application de covoiturage
-- Démarrer le serveur (voir projet covoiturage-server)
-- Démarrer le client (voir projet covoiturage-{play|gwt|angular}
+- Démarrer le serveur - voir projet [covoiturage-server](./covoiturage-server)
+- Démarrer le client souhaité - voir projet au choix :
+    - [covoiturage-play](./covoiturage-play)
+    - [covoiturage-gwt](./covoiturage-gwt)
+    - [covoiturage-angular](./covoiturage-angular)
