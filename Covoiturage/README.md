@@ -3,13 +3,13 @@
 Anthony LHOMME et Robin HACAULT
 ## Informations
 Dans ce dépôt se trouvent les projets de covoiturage des enseignements TAA et GLI. Il a 3 projets Maven :
-- covoiturage-server (TAA)
+- [covoiturage-server](./covoiturage-server)
     - Projet contenant la partie serveur de l'application de Covoiturage, avec le modèle métier (entités JPA) et les services REST d'accès et de modification du modèle.
-- covoiturage-play (GLI)
+- [covoiturage-play](./covoiturage-play)
     - Projet concernant le "TP Play".
-- covoiturage-gwt (GLI)
+- [covoiturage-gwt](./covoiturage-gwt)
     - Projet GWT de réalisation d'un client de l'application de covoiturage. 
-- covoiturage-angular (GLI)
+- [covoiturage-angular](./covoiturage-angular)
     - Projet Angular.js de réalisation d'un client de l'application de covoiturage
 
 ## Lancement de l'application de covoiturage
