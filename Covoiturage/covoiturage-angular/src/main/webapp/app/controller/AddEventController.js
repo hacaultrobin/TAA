@@ -11,7 +11,7 @@ covoitApp.controller('addEventCtrl', ['$scope', 'ngDialog', 'daoEvents', '$rootS
 			} else if (eventForm.desc == undefined || eventForm.desc == "") {
 				alert("Entrez une description correcte");
 			} else {				
-				daoEvents.addEvent(eventForm.date.toJSON(), eventForm.place, eventForm.desc, function () {
+				daoEvents.addEvent(eventForm.date.toUTCString(), eventForm.place, eventForm.desc, function () {
 					ngDialog.close();
 					$rootScope.$broadcast("reloadEventsList");
 				});

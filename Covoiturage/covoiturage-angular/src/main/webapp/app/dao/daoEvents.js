@@ -22,7 +22,7 @@ covoitApp.factory('daoEvents',  ['$http', function($http){
 	
 	var addEvent = function(date, place, desc, callback) {
 		$http.post(REST_API_ROOT_URL + '/events',
-				  encodeURI("date=2014 Oct 31 12:00:00") + "&" + encodeURI("place="+place) + "&" + encodeURI("desc="+desc),
+				  encodeURI("date="+date) + "&" + encodeURI("place="+place) + "&" + encodeURI("desc="+desc),
 				  {headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/x-www-form-urlencoded'}}).success(callback);
 	};
 	
