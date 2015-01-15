@@ -4,18 +4,16 @@
 # Home page
 GET        /                                   controllers.Journeys.journeys()
 
-# TODO Part 1: insert routes for authentication here
+# Routes for authentication
 GET		   /auth/login						   controllers.Authentication.login()
 POST	   /auth/login						   controllers.Authentication.authenticate()
 GET		   /auth/logout						   controllers.Authentication.logout()
 
 # Other Journeys actions
 GET        /journey/:id                        controllers.Journeys.journey(id: Long)
-# TODO Part 2: insert routes handling users joining a journey here
-
-# Part 3: Stream manipulation
-GET        /journey/:id/observe                controllers.Journeys.observe(id: Long)
-GET        /journey/:id/attendees              controllers.Journeys.attendees(id: Long)
+POST       /journey/addEvent           controllers.Journeys.addEvent()
+POST       /journey/:id/addPassenger           controllers.Journeys.addPassenger(id: Long)
+POST       /journey/:id/addDriver              controllers.Journeys.addDriver(id: Long)
 
 # JavaScript reverse router
 GET        /assets/javascript/routes.js        controllers.Journeys.javaScriptRouter()

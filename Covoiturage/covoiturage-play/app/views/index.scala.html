@@ -1,11 +1,27 @@
-@(username: String, events: java.util.List[services.models.Event])
+@(username: String, events: java.util.List[services.models.Event], form: Form[Journeys.Event])
 
 @layout {
-    <h1>Hello @username</h1>
+    <h4>Bonjour @username</h>
 
     <ul>
         @for(event <- events) {
             <li><a href="@routes.Journeys.journey(event.id)">@event.date @event.place - @event.description</a></li>
         }
     </ul>
+    
+	@helper.form(action = routes.Journeys.addEvent()) {
+        @if(form.hasGlobalErrors) {
+            <div class="form-group has-error">
+                <div class="controls">
+                    @for(error <- form.globalErrors) {
+                        <div class="help-block">@error.message</div>
+                    }
+                </div>
+            </div>
+        }
+		<legend>Ajout d'un événement</legend>
+		@helper.inputText(form("place"), '_label -> "Lieu", 'class -> "form-control")
+		@helper.inputText(form("desc"), '_label -> "Description", 'class -> "form-control")
+		<button class="btn">Valider</button>
+	}
 }

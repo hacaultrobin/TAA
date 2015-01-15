@@ -1,8 +1,7 @@
 package services;
 
 import play.libs.F;
-import rx.Observable;
-import services.models.Attendee;
+import play.libs.ws.WSResponse;
 import services.models.Car;
 import services.models.Event;
 import services.models.User;
@@ -21,31 +20,23 @@ public interface JourneysService {
     F.Promise<Event> getEvent(Long id);
     F.Promise<List<User>> allUsers(Long id);
     F.Promise<List<Car>> allCars(Long id);
+
+    F.Promise<WSResponse> addEvent(String place, String desc);
     
     /**
      * Registers a new attendee joining a driver already attending to a journey.
      *
-     * @param journeyId Id of the journey to attend to
-     * @param driverId Id of the driver to attend to
-     * @param attendeeName Name of the passenger joining the driver
-     * @return A boolean value indicating if the operation was successful or not
+     * @param id of the journey to attend to
+     * @param nom Name of the passenger joining the journey
      */
-    F.Promise<Boolean> join(Long journeyId, Long driverId, String attendeeName);
+    F.Promise<WSResponse> addPassenger(Long id, String nom);
 
     /**
      * Registers a new attendee as a driver.
      *
-     * @param journeyId Id of the journey to attend to
-     * @param attendeeName Name of the attendee
-     * @param availableSeats Available seats in the attendee’s vehicule
-     * @return A boolean value indicating if the operation was successful or not
+     * @param id of the journey to attend to
+     * @param nom Name of the driver joining the journey
+     * @param nbSeat Available seats in the vehicule
      */
-    F.Promise<Boolean> attend(Long journeyId, String attendeeName, Integer availableSeats);
-
-    /**
-     * @param journeyId Id of the observed journey
-     * @return A stream of attendees of the given journey
-     */
-    Observable<Attendee> attendees(Long journeyId);
-
+    F.Promise<WSResponse> addDriver(Long id, String nom, String modele, int nbSeat);
 }

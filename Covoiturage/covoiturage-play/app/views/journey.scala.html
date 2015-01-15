@@ -1,4 +1,6 @@
-@(event: services.models.Event, users: java.util.List[services.models.User], cars: java.util.List[services.models.Car])
+@(event: services.models.Event, users: java.util.List[services.models.User], cars: java.util.List[services.models.Car], formPassenger: Form[Journeys.Passenger], formDriver: Form[Journeys.Driver])
+
+@import views.form.HorizontalForm._
 
 @layout {
 	<section>
@@ -26,5 +28,36 @@
 				}
 			</ul>
 		</article>
+		@helper.form(action = routes.Journeys.addPassenger(event.id)) {
+	        @if(formPassenger.hasGlobalErrors) {
+	            <div class="form-group has-error">
+	                <div class="controls">
+	                    @for(error <- formPassenger.globalErrors) {
+	                        <div class="help-block">@error.message</div>
+	                    }
+	                </div>
+	            </div>
+	        }
+			<legend>Ajout d'un passager</legend>
+			@helper.inputText(formPassenger("nom"), '_label -> "Nom", 'class -> "form-control")
+			<button class="btn">Valider</button>
+		}
+		@helper.form(action = routes.Journeys.addDriver(event.id)) {
+	        @if(formDriver.hasGlobalErrors) {
+	            <div class="form-group has-error">
+	                <div class="controls">
+	                    @for(error <- formDriver.globalErrors) {
+	                        <div class="help-block">@error.message</div>
+	                    }
+	                </div>
+	            </div>
+	        }
+			<legend>Ajout d'un conducteur</legend>
+			@helper.inputText(formDriver("nom"), '_label -> "Nom", 'class -> "form-control")
+			<h4>Voiture</h4>
+			@helper.inputText(formDriver("modele"), '_label -> "Modèle", 'class -> "form-control")
+			@helper.inputText(formDriver("nbSeat"), '_label -> "Nombre de sièges", 'class -> "form-control")
+			<button class="btn">Valider</button>
+		}
 	</section>
 }

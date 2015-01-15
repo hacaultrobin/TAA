@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.libs.F;
 import play.libs.ws.WSClient;
-import rx.Observable;
-import scala.NotImplementedError;
-import services.models.Attendee;
+import play.libs.ws.WSResponse;
 import services.models.Car;
 import services.models.Event;
 import services.models.User;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -60,18 +60,25 @@ public class JourneysServiceHTTP implements JourneysService {
 	}
 
 	@Override
-	public F.Promise<Boolean> join(Long journeyId, Long driverId, String attendeeName) {
-		throw new NotImplementedError();
+	public F.Promise<WSResponse> addEvent(String place, String desc) {
+    	String date = Calendar.getInstance().getTime().toGMTString();
+		return client.url(API_URL + "/covoiturage/rest/events")
+	            .setContentType("application/x-www-form-urlencoded; charset=utf-8")
+				.post("date="+date+"&place="+place+"&desc="+desc);
+	}
+	
+	@Override
+	public F.Promise<WSResponse> addPassenger(Long id, String nom) {
+		return client.url(API_URL + "/covoiturage/rest/events/"+id+"/join")
+	            .setContentType("application/x-www-form-urlencoded; charset=utf-8")
+				.post("username="+nom);
 	}
 
 	@Override
-	public F.Promise<Boolean> attend(Long journeyId, String attendeeName, Integer availableSeats) {
-		throw new NotImplementedError();
-	}
-
-	@Override
-	public Observable<Attendee> attendees(Long journeyId) {
-		throw new NotImplementedError();
+	public F.Promise<WSResponse> addDriver(Long id, String nom, String model, int nbSeat) {
+		return client.url(API_URL + "/covoiturage/rest/events/"+id+"/joindriver")
+	            .setContentType("application/x-www-form-urlencoded; charset=utf-8")
+				.post("username="+nom+"&modelcar="+model+"&nbseatscar="+nbSeat);
 	}
 
 }
