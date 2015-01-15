@@ -10,7 +10,6 @@ import services.models.Car;
 import services.models.Event;
 import services.models.User;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -66,6 +65,12 @@ public class JourneysServiceHTTP implements JourneysService {
 	            .setContentType("application/x-www-form-urlencoded; charset=utf-8")
 				.post("date="+date+"&place="+place+"&desc="+desc);
 	}
+
+	@Override
+	public F.Promise<WSResponse> removeEvent(Long id) {
+		return client.url(API_URL + "/covoiturage/rest/events/"+id)
+	            .delete();
+	}
 	
 	@Override
 	public F.Promise<WSResponse> addPassenger(Long id, String nom) {
@@ -81,4 +86,9 @@ public class JourneysServiceHTTP implements JourneysService {
 				.post("username="+nom+"&modelcar="+model+"&nbseatscar="+nbSeat);
 	}
 
+	@Override
+	public F.Promise<WSResponse> removeUser(Long id, Long idUser) {
+		return client.url(API_URL + "/covoiturage/rest/events/"+id+"/removeuser/"+idUser)
+	            .delete();
+	}
 }

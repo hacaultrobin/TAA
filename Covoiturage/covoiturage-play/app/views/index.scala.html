@@ -5,7 +5,11 @@
 
     <ul>
         @for(event <- events) {
-            <li><a href="@routes.Journeys.journey(event.id)">@event.date @event.place - @event.description</a></li>
+            <li>
+            	<span><a href="@routes.Journeys.journey(event.id)">@event.place - @event.description</a></span>
+	            <a href="@routes.Journeys.removeEvent(event.id)"><img src="@routes.Assets.at("img/delete.png")" title="Supprimer l'évènement @event.id"/></a>
+            	<span>@event.date</span>
+            </li>
         }
     </ul>
     

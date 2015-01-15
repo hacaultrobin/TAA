@@ -22,6 +22,7 @@ public interface JourneysService {
     F.Promise<List<Car>> allCars(Long id);
 
     F.Promise<WSResponse> addEvent(String place, String desc);
+    F.Promise<WSResponse> removeEvent(Long id);
     
     /**
      * Registers a new attendee joining a driver already attending to a journey.
@@ -39,4 +40,6 @@ public interface JourneysService {
      * @param nbSeat Available seats in the vehicule
      */
     F.Promise<WSResponse> addDriver(Long id, String nom, String modele, int nbSeat);
+
+    F.Promise<WSResponse> removeUser(Long id, Long idUser);
 }

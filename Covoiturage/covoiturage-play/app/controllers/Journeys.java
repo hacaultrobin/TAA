@@ -31,6 +31,7 @@ public class Journeys extends Controller {
 	 * Show all visible journeys
 	 */
 	public static Result journeys() {
+		// TODO: remplacer timeout par promise
 		//return service.allEvents().map(events -> ok(views.html.index.render(Authentication.username(), events)) );
 		return ok( views.html.index.render(Authentication.username(), service.allEvents().get(500), form(Event.class)) );
 	}
@@ -59,6 +60,16 @@ public class Journeys extends Controller {
         	//redirect to the Journeys.journeys action
         	return redirect(routes.Journeys.journeys());        	
         }
+	}
+
+	/**
+	 * Remove journey
+	 */
+	public static Result removeEvent(Long id) {
+    	service.removeEvent(id);
+    	
+    	//redirect to the Journeys.journeys action
+    	return redirect(routes.Journeys.journeys());
 	}
 
 	/**
@@ -97,6 +108,15 @@ public class Journeys extends Controller {
         }
 	}
 
+	/**
+	 * Unsubscribe user for event give in parameter
+	 */
+	public static Result removeUser(Long id, Long idUser) {
+    	service.removeUser(id, idUser);
+    	
+    	//redirect to the Journeys.journeys action
+    	return redirect(routes.Journeys.journey(id));
+	}
 
 	/**
 	 * Form model for event

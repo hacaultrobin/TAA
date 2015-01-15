@@ -11,7 +11,7 @@
 		        @for(user <- users) {
 					<li>
 						<span>@user.name (@user.id)</span>
-						<!-- <img src="img/delete.png" title="Supprimer @user.name de l'évènement"/> -->
+            			<a href="@routes.Journeys.removeUser(event.id,user.id)"><img src="@routes.Assets.at("img/delete.png")" title="Supprimer @user.name de l'évènement"/></a>
 						<span>Voiture @user.carId</span>
 					</li>
 		        }

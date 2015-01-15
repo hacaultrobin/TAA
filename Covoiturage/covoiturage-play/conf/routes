@@ -2,20 +2,22 @@
 # This file defines all application routes (Higher priority routes first)
 
 # Home page
-GET        /                                   controllers.Journeys.journeys()
+GET			/									controllers.Journeys.journeys()
 
 # Routes for authentication
-GET		   /auth/login						   controllers.Authentication.login()
-POST	   /auth/login						   controllers.Authentication.authenticate()
-GET		   /auth/logout						   controllers.Authentication.logout()
+GET			/auth/login							controllers.Authentication.login()
+POST		/auth/login							controllers.Authentication.authenticate()
+GET			/auth/logout						controllers.Authentication.logout()
 
-# Other Journeys actions
-GET        /journey/:id                        controllers.Journeys.journey(id: Long)
-POST       /journey/addEvent           controllers.Journeys.addEvent()
-POST       /journey/:id/addPassenger           controllers.Journeys.addPassenger(id: Long)
-POST       /journey/:id/addDriver              controllers.Journeys.addDriver(id: Long)
+# Journeys actions
+GET			/journey/:id						controllers.Journeys.journey(id: Long)
+POST		/journey/addEvent					controllers.Journeys.addEvent()
+GET			/journey/:id/removeEvent			controllers.Journeys.removeEvent(id: Long)
+POST		/journey/:id/addPassenger			controllers.Journeys.addPassenger(id: Long)
+POST		/journey/:id/addDriver				controllers.Journeys.addDriver(id: Long)
+GET			/journey/:id/:idUser				controllers.Journeys.removeUser(id: Long, idUser: Long)
 
 # JavaScript reverse router
-GET        /assets/javascript/routes.js        controllers.Journeys.javaScriptRouter()
+GET        /assets/javascript/routes.js			controllers.Journeys.javaScriptRouter()
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file                       controllers.Assets.at(path="/public", file)
+GET        /assets/*file						controllers.Assets.at(path="/public", file)
