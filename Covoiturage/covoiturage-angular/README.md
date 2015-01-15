@@ -8,4 +8,4 @@ Dans ce répertoire se trouve la partie "client" (AngularJS) du projet de covoit
 - Entrer la commande Maven suivante : mvn tomcat7:run
 - Accéder à l'application : [http://localhost:8081/app/index.html](http://localhost:8081/app/index.html)
 
-L'application est lancée sur le port 8081. Ceci est modifiable dans la configuration de tomcat7, dans le fichier [pom.xml](./covoiturage-angular/pom.xml)
+L'application est lancée sur le port 8081. Ceci est modifiable dans la configuration de tomcat7, dans le fichier [pom.xml](./pom.xml)
