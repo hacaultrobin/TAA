@@ -10,6 +10,11 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 public class InitDataBase {
+	
+	/*
+	 * Create 3 users, 1 car, 1 event, it puts the 3 users in the car 
+	 * The 3 users participate to the event, and it is saved in the database
+	 */
 
 	public static void main(String[] args) {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("dev");
@@ -19,9 +24,9 @@ public class InitDataBase {
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 		
-		// Creation de 5 utilisateurs
+		// Creation de 3 utilisateurs
 		List<User> users = new ArrayList<User>();
-		for (int i = 1; i <= 5; i++) {
+		for (int i = 1; i <= 3; i++) {
 			User user = new User("user_" + i);
 			manager.persist(user);
 			users.add(user);

@@ -29,7 +29,7 @@ public class Event {
 	private Date date;
 	
 	/* The place of the event */
-	private String place; // add coords gps ?
+	private String place;
 	
 	/* The description of the event */
 	private String description;
