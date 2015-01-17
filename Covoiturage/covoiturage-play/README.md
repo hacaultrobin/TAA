@@ -8,3 +8,7 @@ Dans ce répertoire se trouve la partie "client" (PLAY) du projet de covoiturage
 - Lancer un shell "sbt" avec la commande suivante : ./sbt
 - Lancer l'application en mode production avec la commande de shell sbt suivante : start
 - Accéder à l'application : [http://localhost:9000](http://localhost:9000)
+
+## Authentification
+- Identifiant : admin
+- Mot de passe : admin
